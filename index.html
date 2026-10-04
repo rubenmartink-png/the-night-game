@@ -174,6 +174,34 @@ tr.win td{color:var(--accent)}
 .slide-row{display:flex;align-items:center;gap:10px}
 .slide-row input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:32px}
 .slide-row output{min-width:44px;text-align:right;font-weight:800;font-size:22px;font-variant-numeric:tabular-nums}
+/* Animaciones de entrada */
+#fx{position:fixed;inset:0;z-index:50;background:var(--bg);overflow:hidden;display:grid;place-items:center;cursor:pointer;transition:opacity .25s}
+#fx.leaving{opacity:0}
+.fx-logo{font-weight:800;font-size:clamp(44px,14vw,64px);line-height:.92;letter-spacing:-.045em;color:var(--ink)}
+.fx-logo b{color:var(--accent);font-weight:800}
+.fx-tap{position:absolute;bottom:calc(9% + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);opacity:0;animation:fxFade .6s ease forwards 2.4s}
+@keyframes fxFade{to{opacity:1}}
+.lasers{position:absolute;inset:0;animation:fxOut .45s ease forwards 2.15s}
+.laser{position:absolute;bottom:-10%;width:3px;height:140%;background:linear-gradient(to top,var(--accent),transparent 85%);transform-origin:bottom center;filter:drop-shadow(0 0 6px var(--accent))}
+.l1{left:12%;animation:sweepL 1.3s ease-in-out 2 alternate both}
+.l2{right:12%;animation:sweepR 1.3s ease-in-out 2 alternate both}
+.l3{left:50%;animation:sweepC 1.3s ease-in-out 2 alternate both}
+@keyframes sweepL{from{transform:rotate(-35deg)}to{transform:rotate(30deg)}}
+@keyframes sweepR{from{transform:rotate(35deg)}to{transform:rotate(-30deg)}}
+@keyframes sweepC{from{transform:rotate(-20deg)}to{transform:rotate(20deg)}}
+@keyframes fxOut{to{opacity:0}}
+.strobe{opacity:0;animation:strobe 1.6s steps(1) forwards .6s}
+@keyframes strobe{0%{opacity:1}8%{opacity:0}14%{opacity:1}20%{opacity:0}30%{opacity:1}36%{opacity:0}50%,100%{opacity:1}}
+.flash{position:absolute;inset:0;background:var(--ink);opacity:0;animation:flash 1.6s steps(1) .6s}
+@keyframes flash{0%{opacity:.16}8%{opacity:0}14%{opacity:.1}20%{opacity:0}30%{opacity:.07}36%{opacity:0}}
+.deck{position:absolute;inset:0;display:grid;place-items:center;perspective:900px}
+.fc{position:absolute;width:min(62vw,300px);aspect-ratio:5/6;border-radius:12px;background:var(--surface);border:1.5px solid var(--accent);background-image:repeating-linear-gradient(-45deg,transparent 0 10px,var(--accent-soft) 10px 12px);opacity:0;animation:fly .55s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes fly{from{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r))}to{opacity:1;transform:translate(0,0) rotate(var(--rr))}}
+.fc.top{background:var(--accent);background-image:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;text-align:center;color:#fff;animation:fly .55s cubic-bezier(.2,.8,.3,1) forwards 1s,flip .6s ease forwards 1.65s}
+.fc.top .msg{font-weight:800;font-size:clamp(28px,9vw,40px);line-height:1;letter-spacing:-.03em;text-wrap:balance;opacity:0;animation:fxFade .1s forwards 1.95s}
+.fc.top .sub{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:0;animation:fxFade .2s forwards 2.05s}
+@keyframes flip{0%{transform:rotateY(0)}50%{transform:rotateY(90deg)}100%{transform:rotateY(0) scale(1.06)}}
+@media (prefers-reduced-motion:reduce){#fx *{animation:none!important}.lasers,.flash,.fc:not(.top){display:none}.strobe,.fx-tap,.fc.top,.fc.top .msg,.fc.top .sub{opacity:1!important}}
 @media (prefers-reduced-motion:reduce){.sheet,.card.pop{animation:none}.btn,body,.mode{transition:none}}
 @media (max-height:640px){.card{max-height:38vh}.timer{width:90px;height:90px}.timer .num{font-size:32px}}
 </style>
@@ -181,6 +209,7 @@ tr.win td{color:var(--accent)}
 </head>
 <body>
 <div id="app"></div>
+<div id="fx" hidden></div>
 
 <script>
 const COLORS=["#ff7a59","#2fd68a","#b69cff","#4cc9f0","#ff6fae","#ffd23f"];
@@ -197,7 +226,7 @@ for(const k in THEMES){const t=THEMES[k];t.pool=t.pool.split("|").map(w=>{const 
 
 const L={
 es:{
-  tagline:"Tres rondas, el mismo mazo y cada vez menos palabras.",lang:"Idioma",look:"Apariencia",dark:"Modo oscuro",light:"Modo claro",themes:"Temas",pick:"(elige uno o varios)",cardsN:n=>`${n} cartas`,
+  tapStart:"Toca para empezar",gameStarts:"¡Comienza la partida!",tagline:"Tres rondas, el mismo mazo y cada vez menos palabras.",lang:"Idioma",look:"Apariencia",dark:"Modo oscuro",light:"Modo claro",themes:"Temas",pick:"(elige uno o varios)",cardsN:n=>`${n} cartas`,
   adv:"Avanzado",nofilter:"Sin filtros",teams:"Equipos",addTeam:"+ Añadir equipo",removeTeam:"Quitar equipo",teamN:n=>`Equipo ${n}`,
   cards:"Cartas",maxCards:n=>`máx. ${n}`,plusCustom:n=>`+ ${n} tuyas`,noSkipR1:"En la ronda 1 no se puede pasar carta.",lastCard:"Es la última carta: no se puede pasar.",secs:"Segundos por turno",fewer:"Menos",more:"Más",
   custom:"Tus propias cartas",customHint:"(opcional, una por línea)",customPh:"La abuela Carmen\nTorre Eiffel\nPaella",deal:"Repartir cartas",
@@ -216,7 +245,7 @@ es:{
   R:{1:["Descripción libre","Habla todo lo que quieras, pero sin decir la palabra ni su raíz."],2:["Una sola palabra","Solo puedes decir una palabra. Tu equipo tiene un único intento."],3:["Mímica","Prohibido hablar. Solo gestos, sonidos y mímica."]}
 },
 en:{
-  tagline:"Three rounds, the same deck, fewer words every time.",lang:"Language",look:"Appearance",dark:"Dark mode",light:"Light mode",themes:"Themes",pick:"(pick one or more)",cardsN:n=>`${n} cards`,
+  tapStart:"Tap to start",gameStarts:"Let the game begin!",tagline:"Three rounds, the same deck, fewer words every time.",lang:"Language",look:"Appearance",dark:"Dark mode",light:"Light mode",themes:"Themes",pick:"(pick one or more)",cardsN:n=>`${n} cards`,
   adv:"Advanced",nofilter:"No filter",teams:"Teams",addTeam:"+ Add team",removeTeam:"Remove team",teamN:n=>`Team ${n}`,
   cards:"Cards",maxCards:n=>`max ${n}`,plusCustom:n=>`+ ${n} of yours`,noSkipR1:"No skipping in round 1.",lastCard:"Last card: it can't be skipped.",secs:"Seconds per turn",fewer:"Fewer",more:"More",
   custom:"Your own cards",customHint:"(optional, one per line)",customPh:"Grandma Carmen\nEiffel Tower\nPaella",deal:"Deal cards",
@@ -451,6 +480,20 @@ function render(){
   if(S.screen==="playing")paintTimer();
 }
 
+
+/* ---------- Animaciones ---------- */
+const fx=document.getElementById("fx");let fxTimer=null;
+function closeFx(){clearTimeout(fxTimer);if(fx.hidden)return;fx.classList.add("leaving");setTimeout(()=>{fx.hidden=true;fx.innerHTML="";fx.classList.remove("leaving")},250)}
+function showIntro(){
+  fx.innerHTML=`<div class="lasers"><div class="laser l1"></div><div class="laser l2"></div><div class="laser l3"></div></div><div class="flash"></div><div class="strobe fx-logo">The Night<br><b>Game</b></div><div class="fx-tap">${T().tapStart}</div>`;
+  fx.hidden=false;fx.onclick=()=>{audio();closeFx()};
+}
+function showShuffle(){
+  const cs=[["-160%","-120%","-40deg","-8deg",0],["160%","-90%","35deg","6deg",.12],["-150%","130%","25deg","-3deg",.24],["150%","120%","-30deg","4deg",.36],["0","-180%","10deg","-1deg",.48]];
+  fx.innerHTML=`<div class="deck">${cs.map(c=>`<div class="fc" style="--x:${c[0]};--y:${c[1]};--r:${c[2]};--rr:${c[3]};animation-delay:${c[4]}s"></div>`).join("")}<div class="fc top" style="--x:0;--y:200%;--r:0deg;--rr:0deg"><div class="msg">${T().gameStarts}</div><div class="sub">${T().cardsN(S.deck.length)}</div></div></div>`;
+  fx.hidden=false;fx.onclick=closeFx;fxTimer=setTimeout(closeFx,3200);
+}
+
 /* ---------- Eventos ---------- */
 app.addEventListener("input",e=>{
   if(e.target.dataset.team!==undefined){S.teams[+e.target.dataset.team].name=e.target.value;save()}
@@ -479,7 +522,7 @@ app.addEventListener("click",e=>{
     case"doTheme":stopTimer();S.current=null;S.menu=null;S.paused=false;S.scores=[];S.round=1;S.screen="setup";break;
     case"back":S.screen="setup";break;
     case"swap":{const c=S.deck[i],j=S.spare.findIndex(x=>x[1]===c[1]);if(j>=0){const n=S.spare.splice(j,1)[0];S.spare.push(c);S.deck[i]=n}}break;
-    case"start":startGame();break;
+    case"start":startGame();save();render();showShuffle();return;
     case"toReady":S.screen="turnReady";break;
     case"reveal":reveal();return;
     case"hit":hit();return;
@@ -498,6 +541,7 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden&&S.screen==
 /* ---------- Arranque ---------- */
 function validCard(c){return Array.isArray(c)&&(c[1]==="custom"||THEMES[c[1]])}
 function start(data){
+  const fresh0=!(data&&data.screen);
   S=(data&&data.screen)?data:(load()||fresh());
   if(!S.lang)S.lang="es";if(!S.theme)S.theme="dark";
   const okModes=Array.isArray(S.modes)&&S.modes.length&&S.modes.every(m=>THEMES[m]);
@@ -506,6 +550,7 @@ function start(data){
   if(S.screen==="playing"){S.paused=true}
   S.menuPaused=false;
   render();
+  if(fresh0)showIntro();
 }
 window.claude?.hot?.snapshot?.(()=>{const c={...S};if(c.screen==="playing")c.paused=true;return c});
 window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
