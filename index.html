@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<meta name="description" content="The Night Game: juego de equipos en tres rondas (descripción, una palabra y mímica) para jugar con el móvil.">
+<meta name="description" content="The Night Game: Encore (equipos, tres rondas) y Fake ID (encuentra al impostor) para jugar con un solo móvil.">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>The Night Game</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -201,6 +201,34 @@ tr.win td{color:var(--accent)}
 .fc.top .msg{font-weight:800;font-size:clamp(28px,9vw,40px);line-height:1;letter-spacing:-.03em;text-wrap:balance;opacity:0;animation:fxFade .1s forwards 1.95s}
 .fc.top .sub{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:0;animation:fxFade .2s forwards 2.05s}
 @keyframes flip{0%{transform:rotateY(0)}50%{transform:rotateY(90deg)}100%{transform:rotateY(0) scale(1.06)}}
+.pnum{width:28px;height:28px;flex:none;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--ink-soft)}
+.seg.wide{align-self:flex-start}
+.seg.wide button{min-width:72px;height:38px;font-size:13px}
+.games{display:flex;flex-direction:column;gap:10px}
+.game{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:18px 18px 20px;border-radius:10px;background:var(--surface);border:1.5px solid var(--line);transition:border-color .15s}
+.game:hover,.game:focus-visible{border-color:var(--accent)}
+.gname{font-weight:800;font-size:clamp(34px,10vw,44px);line-height:1;letter-spacing:-.04em}
+.game p{margin:0;color:var(--ink-soft);font-size:14px;line-height:1.45;font-weight:500;padding-right:28px}
+.game .live{margin-top:4px;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:3px;background:var(--accent);color:#fff}
+.game .arrow{position:absolute;right:18px;bottom:18px;font-size:22px;font-weight:800;color:var(--accent)}
+.idcard{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;background:var(--surface);color:var(--ink);border:1.5px solid var(--accent);background-image:repeating-linear-gradient(-45deg,transparent 0 12px,var(--accent-soft) 12px 14px)}
+.idcard .id-front{display:none;flex-direction:column;align-items:center;gap:12px}
+.idcard .id-back{display:flex;flex-direction:column;align-items:center;gap:10px}
+.idcard .id-back .word{font-size:24px;text-transform:uppercase;letter-spacing:.02em}
+.idcard.show{background:var(--accent);background-image:none;color:#fff}
+.idcard.imp.show{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.idcard.show .id-front{display:flex}
+.idcard.show .id-back{display:none}
+.ficlock{font-weight:800;font-size:clamp(64px,22vw,104px);letter-spacing:-.05em;font-variant-numeric:tabular-nums;line-height:1}
+.ficlock.hot{color:var(--accent)}
+.vote-list{display:flex;flex-direction:column;gap:6px}
+.vote{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r);background:var(--surface);border:1.5px solid transparent;text-align:left;font-weight:700;position:relative}
+.vote .t{flex:1;min-width:0}
+.vote .check{position:static}
+.vote.on{border-color:var(--accent);background:var(--accent-soft)}
+.vote.on .check{background:var(--accent);border-color:var(--accent);color:#fff}
+.reveal{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.rv{font-weight:800;font-size:22px;letter-spacing:-.02em;margin-top:4px;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){#fx *{animation:none!important}.lasers,.flash,.fc:not(.top){display:none}.strobe,.fx-tap,.fc.top,.fc.top .msg,.fc.top .sub{opacity:1!important}}
 @media (prefers-reduced-motion:reduce){.sheet,.card.pop{animation:none}.btn,body,.mode{transition:none}}
 @media (max-height:640px){.card{max-height:38vh}.timer{width:90px;height:90px}.timer .num{font-size:32px}}
@@ -272,7 +300,7 @@ const cardWord=c=>S.lang==="en"&&c[1]!=="custom"?(c[2]||c[0]):c[0];
 const cardCat=c=>c[1]==="custom"?T().yourCard:THEMES[c[1]]?themeName(c[1]):c[1];
 
 let S=null;
-function fresh(){return{screen:"setup",lang:"es",theme:"dark",modes:["famosos","cine","musica","futbol","videojuegos","xceed"],teams:[{name:"Equipo Rojo",color:COLORS[0]},{name:"Equipo Verde",color:COLORS[1]}],numCards:36,turnSecs:60,custom:"",deck:[],spare:[],round:1,remaining:[],current:null,teamIdx:0,scores:[],turnGuessed:[],timeLeft:60,paused:false}}
+function fresh(){return{app:"hub",fi:fiFresh("es"),screen:"setup",lang:"es",theme:"dark",modes:["famosos","cine","musica","futbol","videojuegos","xceed"],teams:[{name:"Equipo Rojo",color:COLORS[0]},{name:"Equipo Verde",color:COLORS[1]}],numCards:36,turnSecs:60,custom:"",deck:[],spare:[],round:1,remaining:[],current:null,teamIdx:0,scores:[],turnGuessed:[],timeLeft:60,paused:false}}
 function setLang(l){
   if(S.lang===l)return;
   const from=L[S.lang||"es"],to=L[l];
@@ -280,6 +308,7 @@ function setLang(l){
     const fi=from.defTeams.indexOf(t.name);if(fi>=0){t.name=to.defTeams[fi];return}
     const m=t.name.match(/^(Equipo|Team) (\d+)$/);if(m)t.name=to.teamN(m[2]);
   });
+  if(S.fi)S.fi.players=S.fi.players.map(p=>{const m=p.match(/^(Jugador|Player) (\d+)$/);return m?FL[l].playerN(m[2]):p});
   S.lang=l;
 }
 
@@ -355,8 +384,8 @@ function nextTurn(){
   save();render();
 }
 function nextRound(){S.round++;S.remaining=shuffle(S.deck);S.screen="roundIntro";save();render()}
-function openMenu(m){if(S.screen==="playing"&&!S.paused){stopTimer();S.paused=true;S.menuPaused=true}S.menu=m;save();render()}
-function closeMenu(){S.menu=null;if(S.screen==="playing"&&S.menuPaused){S.menuPaused=false;startTimer()}save();render()}
+function openMenu(m){if(S.app==="fakeid"){if(S.fi.running){fiStop();S.menuPaused=true}}else if(S.screen==="playing"&&!S.paused){stopTimer();S.paused=true;S.menuPaused=true}S.menu=m;save();render()}
+function closeMenu(){S.menu=null;if(S.menuPaused){S.menuPaused=false;if(S.app==="fakeid")fiRun();else if(S.screen==="playing")startTimer()}save();render()}
 function togglePause(){if(S.paused){startTimer();render()}else{stopTimer();S.paused=true;render()}}
 
 /* ---------- Vistas ---------- */
@@ -373,6 +402,7 @@ function menuHTML(){
   if(S.menu==="main")inner=`<div class="toprow"><div class="eyebrow">${t.menuEyebrow(S.round)}</div>${prefs()}</div><h2>${t.pausedGame}</h2>
     <button class="btn btn-main" data-a="resume">${t.backGame}</button>
     <button class="btn btn-ghost" data-a="mScores">${t.scores}</button>
+    <button class="btn btn-ghost" data-a="mSwitch">${F().switchGame}</button>
     <button class="btn btn-ghost" data-a="mTheme">${t.changeTheme}</button>
     <button class="btn btn-ghost" data-a="mEnd" style="color:var(--bad)">${t.endGame}</button>`;
   else if(S.menu==="scores")inner=`<div class="eyebrow">${t.liveScores}</div><h2>${t.round(S.round)} · ${rName(S.round)}</h2>${table()}<button class="btn btn-ghost center" data-a="menu">${t.backMenu}</button>`;
@@ -386,7 +416,7 @@ function timerHTML(){const C=2*Math.PI*52;return `<div class="timer" id="timer" 
 const V={
 setup(){const t=T();
   return `<div class="scroll">
-    <div class="toprow" style="padding-top:6px;align-items:flex-start"><div class="logo">The Night<br><span>Game</span></div>${prefs()}</div>
+    <div class="toprow" style="padding-top:6px;align-items:flex-start"><div><button class="link" data-a="hub">${F().games}</button><div class="logo" style="margin-top:6px">Encore<span>.</span></div></div>${prefs()}</div>
     <p class="small">${t.tagline}</p>
     <div class="field"><div class="toprow"><label>${t.themes} <span class="small">${t.pick}</span></label><span class="small">${t.cardsN(S.modes.length*200)}</span></div>
       <div class="modes">${Object.keys(THEMES).map(k=>`<button class="mode ${S.modes.includes(k)?"on":""}" data-a="mode" data-m="${k}" aria-pressed="${S.modes.includes(k)}"><span class="check" aria-hidden="true">${S.modes.includes(k)?"✓":""}</span><span class="mname">${themeName(k)}</span><span class="mtag">${themeTag(k)}</span><span class="lvl">${t.cardsN(THEMES[k].pool.length)}</span></button>`).join("")}</div>
@@ -465,19 +495,194 @@ function table(){
   return `<div style="overflow-x:auto"><table><thead><tr><th>${T().team}</th><th>R1</th><th>R2</th><th>R3</th><th>Total</th></tr></thead><tbody>${order.map(i=>`<tr class="${tot[i]===max&&max>0?"win":""}"><td><span class="dot" style="background:${S.teams[i].color};display:inline-block;margin-right:8px;vertical-align:middle"></span>${esc(S.teams[i].name)}</td>${S.scores[i].map((v,r)=>`<td>${r<S.round?v:"–"}</td>`).join("")}<td class="tot">${tot[i]}</td></tr>`).join("")}</tbody></table></div>`;
 }
 
+/* ---------- Hub + Fake ID ---------- */
+const FL={
+es:{
+  hubTag:"Dos juegos para la noche. Un solo móvil.",games:"← The Night Game",inProgress:"Partida en curso",
+  encoreMeta:"Equipos · 3 rondas",encoreDesc:"Describe, resume en una palabra y haz mímica con el mismo mazo. Gana el equipo que más adivine.",
+  fiMeta:"Jugadores · Impostor",fiDesc:"Todos reciben la misma carta menos uno. Dad pistas, desconfiad y pillad al que no sabe de qué va la cosa.",
+  switchGame:"Cambiar de juego",
+  players:"Jugadores",addPlayer:"+ Añadir jugador",removePlayer:"Quitar jugador",playerN:n=>`Jugador ${n}`,impostors:"Impostores",
+  hint:"Mostrar pista al impostor",hintOn:"Sí",hintOff:"No",hintHelp:"Si está activado, el impostor ve la categoría de la carta.",
+  debate:"Tiempo de debate",mins:s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`,
+  fiThemesNote:"Solo se usan cartas cortas, de una a tres palabras.",dealIds:"Repartir identidades",
+  roundN:n=>`Ronda ${n}`,idOf:(i,n)=>`Identidad ${i} de ${n}`,passTo:p=>`Pásale el móvil a ${p}`,
+  holdHelp:"Mantén pulsado para ver tu carta. Que no mire nadie más.",hold:"Mantén pulsado",
+  youImp:"Eres el impostor",impHint:c=>`Pista: ${c}`,impNoHint:"Sin pista. Escucha y disimula.",yourWord:"Tu carta",
+  nextPlayer:p=>`Ocultar y pasar a ${p}`,toDebate:"Todos listos: al debate",
+  debateH:"Debate",starts:p=>`Empieza ${p}`,debateRule:"Por turnos, cada uno dice una palabra relacionada con su carta. El impostor tiene que disimular. Luego, discutid quién es.",
+  startTimer:"Empezar cuenta atrás",pauseTimer:"Pausar",resumeTimer:"Reanudar",timeOver:"¡Se acabó el tiempo!",toVote:"Ir a la votación",
+  voteH:"¿A quién expulsáis?",voteHelp:"Poneos de acuerdo y marcad a una persona.",expel:p=>`Expulsar a ${p}`,pickOne:"Elige a alguien",
+  caught:"¡Pillado!",wasImp:p=>`${p} era impostor`,lastChance:p=>`Última oportunidad: ${p} puede intentar adivinar la carta. Si acierta, se lleva la ronda igualmente.`,
+  guessed:"Ha acertado la carta",notGuessed:"No la ha acertado",
+  missed:"Fallasteis",wasInnocent:p=>`${p} era inocente`,seeResult:"Ver resultado",
+  crewWin:"Ganan los inocentes",impWin:n=>n>1?"Ganan los impostores":"Gana el impostor",impSteal:"El impostor roba la ronda",
+  theWord:"La carta era",theImps:n=>n>1?"Impostores":"Impostor",points:"Puntos",player:"Jugador",
+  newRound:"Nueva ronda",finish:"Terminar partida",finalH:"Clasificación final",winner:p=>`Gana ${p}`,tie:"¡Empate!",playAgain:"Otra partida",settings:"Ajustes",
+  menuEyebrow:r=>`Menú · Fake ID · Ronda ${r}`,changeSettings:"Cambiar ajustes",confirmSetH:"¿Volver a los ajustes?",confirmSetP:"La partida en curso se cancela y se pierden los puntos. Los jugadores se mantienen.",
+  confirmEndP:"Se cierra ahora con los puntos actuales y se muestra la clasificación.",scoring:"Inocentes: +1 cada uno si pillan a un impostor. Impostores: +2 si sobreviven o adivinan la carta."
+},
+en:{
+  hubTag:"Two games for the night. One phone.",games:"← The Night Game",inProgress:"Game in progress",
+  encoreMeta:"Teams · 3 rounds",encoreDesc:"Describe it, sum it up in one word, then act it out, all with the same deck. The team that guesses the most wins.",
+  fiMeta:"Players · Impostor",fiDesc:"Everyone gets the same card except one. Give clues, trust no one and catch the player who has no idea what's going on.",
+  switchGame:"Switch game",
+  players:"Players",addPlayer:"+ Add player",removePlayer:"Remove player",playerN:n=>`Player ${n}`,impostors:"Impostors",
+  hint:"Show the impostor a hint",hintOn:"Yes",hintOff:"No",hintHelp:"When on, the impostor sees the card's category.",
+  debate:"Discussion time",mins:s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`,
+  fiThemesNote:"Only short cards are used, one to three words.",dealIds:"Deal identities",
+  roundN:n=>`Round ${n}`,idOf:(i,n)=>`Identity ${i} of ${n}`,passTo:p=>`Pass the phone to ${p}`,
+  holdHelp:"Press and hold to see your card. Don't let anyone else look.",hold:"Press and hold",
+  youImp:"You're the impostor",impHint:c=>`Hint: ${c}`,impNoHint:"No hint. Listen and blend in.",yourWord:"Your card",
+  nextPlayer:p=>`Hide and pass to ${p}`,toDebate:"Everyone's ready: discuss",
+  debateH:"Discussion",starts:p=>`${p} starts`,debateRule:"Take turns saying one word related to your card. The impostor has to blend in. Then argue about who it is.",
+  startTimer:"Start countdown",pauseTimer:"Pause",resumeTimer:"Resume",timeOver:"Time's up!",toVote:"Go to the vote",
+  voteH:"Who are you voting out?",voteHelp:"Agree as a group and pick one person.",expel:p=>`Vote out ${p}`,pickOne:"Pick someone",
+  caught:"Caught!",wasImp:p=>`${p} was an impostor`,lastChance:p=>`Last chance: ${p} can try to guess the card. If they get it, they still win the round.`,
+  guessed:"They guessed the card",notGuessed:"They didn't guess it",
+  missed:"Wrong call",wasInnocent:p=>`${p} was innocent`,seeResult:"See result",
+  crewWin:"The innocents win",impWin:n=>n>1?"The impostors win":"The impostor wins",impSteal:"The impostor steals the round",
+  theWord:"The card was",theImps:n=>n>1?"Impostors":"Impostor",points:"Points",player:"Player",
+  newRound:"New round",finish:"End game",finalH:"Final standings",winner:p=>`${p} wins`,tie:"It's a tie!",playAgain:"Play again",settings:"Settings",
+  menuEyebrow:r=>`Menu · Fake ID · Round ${r}`,changeSettings:"Change settings",confirmSetH:"Back to settings?",confirmSetP:"The current game is cancelled and the points are lost. Players are kept.",
+  confirmEndP:"The game ends now with the current points and shows the standings.",scoring:"Innocents: +1 each if they catch an impostor. Impostors: +2 if they survive or guess the card."
+}};
+const F=()=>FL[S.lang]||FL.es;
+const ALL_MODES=["famosos","cine","musica","futbol","videojuegos","xceed"];
+function fiFresh(lang){const f=FL[lang||"es"];return{screen:"setup",players:[1,2,3,4].map(n=>f.playerN(n)),impostors:1,hint:true,debateSecs:180,modes:ALL_MODES.slice(),round:0,card:null,imp:[],turn:0,revealed:false,starter:0,accused:null,scores:{},used:[],left:180,running:false,outcome:null,sel:null}}
+const isShort=c=>c[0].split(/\s+/).length<=3&&!/[«»"“:¿?¡!]/.test(c[0]);
+function fiPool(){const fi=S.fi;let p=[];fi.modes.forEach(m=>p=p.concat(THEMES[m].pool.filter(isShort)));customCards().forEach(t=>p.push([t,"custom",t]));return p}
+function maxImps(){return Math.max(1,Math.floor((S.fi.players.length-1)/2))}
+function fiNewRound(){
+  const fi=S.fi;let pool=fiPool().filter(c=>!fi.used.includes(c[0]));
+  if(!pool.length){fi.used=[];pool=fiPool()}
+  fi.card=pool[Math.random()*pool.length|0];fi.used.push(fi.card[0]);
+  const idx=shuffle(fi.players.map((_,i)=>i));fi.imp=idx.slice(0,Math.min(fi.impostors,maxImps()));
+  fi.starter=Math.random()*fi.players.length|0;fi.turn=0;fi.revealed=false;fi.accused=null;fi.sel=null;fi.outcome=null;
+  fi.left=fi.debateSecs;fi.running=false;fi.round++;fi.screen="pass";
+  fi.players.forEach(p=>{if(fi.scores[p]==null)fi.scores[p]=0});
+}
+function fiStartGame(){const fi=S.fi;fi.players=fi.players.map((p,i)=>p.trim()||F().playerN(i+1));fi.scores={};fi.used=[];fi.round=0;fi.impostors=Math.min(fi.impostors,maxImps());fiNewRound()}
+let fiTimer=null,fiEnds=0;
+function fiRun(){const fi=S.fi;fiEnds=performance.now()+fi.left*1000;fi.running=true;clearInterval(fiTimer);fiTimer=setInterval(fiTick,200);keepAwake();fiTick()}
+function fiStop(){clearInterval(fiTimer);fiTimer=null;if(S.fi)S.fi.running=false}
+function fiTick(){const fi=S.fi;fi.left=Math.max(0,(fiEnds-performance.now())/1000);
+  const el=document.getElementById("fiClock");if(el){el.textContent=F().mins(Math.ceil(fi.left));el.classList.toggle("hot",fi.left<=10)}
+  if(fi.left<=0){fiStop();beep(330,.5,.25);save();render()}}
+function fiOutcome(o){const fi=S.fi;fi.outcome=o;
+  if(o==="crew")fi.players.forEach((p,i)=>{if(!fi.imp.includes(i))fi.scores[p]=(fi.scores[p]||0)+1});
+  else fi.imp.forEach(i=>{const p=fi.players[i];fi.scores[p]=(fi.scores[p]||0)+2});
+  fi.screen="roundEnd";}
+function fiTable(){const fi=S.fi,f=F(),rows=fi.players.map(p=>[p,fi.scores[p]||0]).sort((a,b)=>b[1]-a[1]),max=rows.length?rows[0][1]:0;
+  return `<div style="overflow-x:auto"><table><thead><tr><th>${f.player}</th><th>${f.points}</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r[1]===max&&max>0?"win":""}"><td>${esc(r[0])}</td><td class="tot">${r[1]}</td></tr>`).join("")}</tbody></table></div>`}
+function fiHeader(sub){return `<div class="toprow"><div class="eyebrow">Fake ID · ${F().roundN(S.fi.round)}${sub?" · "+sub:""}</div>${menuBtn()}</div>`}
+const FV={
+setup(){const t=T(),f=F(),fi=S.fi;
+  return `<div class="scroll">
+    <div class="toprow" style="padding-top:6px;align-items:flex-start"><div><button class="link" data-a="hub">${f.games}</button><div class="logo" style="margin-top:6px">Fake <span>ID</span></div></div>${prefs()}</div>
+    <p class="small">${f.fiDesc}</p>
+    <div class="field"><label>${f.players} <span class="small">(${fi.players.length})</span></label>
+      ${fi.players.map((p,i)=>`<div class="team-row"><span class="pnum">${i+1}</span><input id="pl-${i}" data-player="${i}" value="${esc(p)}" maxlength="18" aria-label="${f.player} ${i+1}">${fi.players.length>3?`<button class="icon-btn" data-a="fiDelP" data-i="${i}" aria-label="${f.removePlayer}">×</button>`:""}</div>`).join("")}
+      ${fi.players.length<20?`<button class="btn btn-ghost" data-a="fiAddP" style="min-height:46px">${f.addPlayer}</button>`:""}
+    </div>
+    <div class="row" style="flex-wrap:wrap">
+      <div class="field"><label>${f.impostors}</label><div class="stepper"><button class="icon-btn" data-a="fiImp" data-d="-1" aria-label="${t.fewer}">−</button><output>${Math.min(fi.impostors,maxImps())}</output><button class="icon-btn" data-a="fiImp" data-d="1" aria-label="${t.more}">+</button></div></div>
+      <div class="field"><label>${f.debate}</label><div class="stepper"><button class="icon-btn" data-a="fiDeb" data-d="-30" aria-label="${t.fewer}">−</button><output>${f.mins(fi.debateSecs)}</output><button class="icon-btn" data-a="fiDeb" data-d="30" aria-label="${t.more}">+</button></div></div>
+    </div>
+    <div class="field"><label>${f.hint}</label>
+      <div class="seg wide" role="group" aria-label="${f.hint}"><button data-a="fiHint" data-v="1" class="${fi.hint?"on":""}" aria-pressed="${fi.hint}">${f.hintOn}</button><button data-a="fiHint" data-v="0" class="${fi.hint?"":"on"}" aria-pressed="${!fi.hint}">${f.hintOff}</button></div>
+      <p class="small">${f.hintHelp}</p>
+    </div>
+    <div class="field"><div class="toprow"><label>${t.themes} <span class="small">${t.pick}</span></label></div>
+      <div class="modes">${Object.keys(THEMES).map(k=>`<button class="mode ${fi.modes.includes(k)?"on":""}" data-a="fiMode" data-m="${k}" aria-pressed="${fi.modes.includes(k)}"><span class="check" aria-hidden="true">${fi.modes.includes(k)?"✓":""}</span><span class="mname">${themeName(k)}</span><span class="mtag">${themeTag(k)}</span><span class="lvl">${t.cardsN(THEMES[k].pool.filter(isShort).length)}</span></button>`).join("")}</div>
+      <p class="small">${f.fiThemesNote}</p>
+    </div>
+    <p class="small">${f.scoring}</p>
+  </div>
+  <button class="btn btn-main" data-a="fiDeal">${f.dealIds}</button>`;
+},
+pass(){const f=F(),fi=S.fi,n=fi.players.length,p=fi.players[fi.turn],isImp=fi.imp.includes(fi.turn),last=fi.turn===n-1;
+  const front=isImp?`<div class="cat">Fake ID</div><div class="word">${f.youImp}</div><div class="cat" style="opacity:.9">${fi.hint?esc(f.impHint(cardCat(fi.card))):f.impNoHint}</div>`
+    :`<div class="cat">${esc(cardCat(fi.card))}</div><div class="word ${cardWord(fi.card).length>18?"long":""}">${esc(cardWord(fi.card))}</div>`;
+  return `${fiHeader(f.idOf(fi.turn+1,n))}
+  <div><div class="big">${f.passTo(esc(p))}</div><p class="small" style="margin-top:8px">${f.holdHelp}</p></div>
+  <div class="stage"><button class="card idcard ${isImp?"imp":""}" data-hold aria-label="${f.hold}"><div class="id-back"><div class="word">${f.hold}</div><div class="cat">${esc(p)}</div></div><div class="id-front">${front}</div></button></div>
+  <button class="btn btn-main" data-a="fiNext" ${fi.revealed?"":"disabled"}>${last?f.toDebate:f.nextPlayer(esc(fi.players[fi.turn+1]))}</button>`;
+},
+debate(){const f=F(),fi=S.fi;
+  return `${fiHeader(f.debateH)}
+  <div><div class="big">${f.starts(esc(fi.players[fi.starter]))}</div><p class="small" style="margin-top:8px">${f.debateRule}</p></div>
+  <div class="stage"><div class="ficlock ${fi.left<=10?"hot":""}" id="fiClock" role="timer">${f.mins(Math.ceil(fi.left))}</div>${fi.left<=0?`<div class="eyebrow" style="color:var(--accent)">${f.timeOver}</div>`:""}</div>
+  ${fi.left>0?`<button class="btn btn-ghost" data-a="fiClock">${fi.running?f.pauseTimer:(fi.left<fi.debateSecs?f.resumeTimer:f.startTimer)}</button>`:""}
+  <button class="btn btn-main" data-a="fiToVote">${f.toVote}</button>`;
+},
+vote(){const f=F(),fi=S.fi;
+  return `${fiHeader()}
+  <div><div class="big">${f.voteH}</div><p class="small" style="margin-top:8px">${f.voteHelp}</p></div>
+  <div class="scroll"><div class="vote-list">${fi.players.map((p,i)=>`<button class="vote ${fi.sel===i?"on":""}" data-a="fiSel" data-i="${i}" aria-pressed="${fi.sel===i}"><span class="pnum">${i+1}</span><span class="t">${esc(p)}</span><span class="check" aria-hidden="true">${fi.sel===i?"✓":""}</span></button>`).join("")}</div></div>
+  <button class="btn btn-danger" data-a="fiExpel" ${fi.sel==null?"disabled":""}>${fi.sel==null?f.pickOne:f.expel(esc(fi.players[fi.sel]))}</button>`;
+},
+result(){const f=F(),fi=S.fi,p=esc(fi.players[fi.accused]),hit=fi.imp.includes(fi.accused);
+  if(hit)return `${fiHeader()}
+  <div class="stage" style="align-items:stretch"><div class="eyebrow" style="color:var(--accent)">${f.caught}</div><div class="big">${f.wasImp(p)}</div><p style="font-size:17px;line-height:1.45">${f.lastChance(p)}</p></div>
+  <div class="row"><button class="btn btn-ghost" data-a="fiGuess" data-v="0">${f.notGuessed}</button><button class="btn btn-main" data-a="fiGuess" data-v="1">${f.guessed}</button></div>`;
+  return `${fiHeader()}
+  <div class="stage" style="align-items:stretch"><div class="eyebrow" style="color:var(--accent)">${f.missed}</div><div class="big">${f.wasInnocent(p)}</div></div>
+  <button class="btn btn-main" data-a="fiSeeRes">${f.seeResult}</button>`;
+},
+roundEnd(){const f=F(),fi=S.fi,o=fi.outcome,title=o==="crew"?f.crewWin:o==="steal"?f.impSteal:f.impWin(fi.imp.length);
+  return `${fiHeader()}
+  <div><div class="big">${title}</div></div>
+  <div class="scroll">
+    <div class="reveal"><div><div class="eyebrow">${f.theWord}</div><div class="rv">${esc(cardWord(fi.card))}</div><div class="small">${esc(cardCat(fi.card))}</div></div>
+    <div><div class="eyebrow">${f.theImps(fi.imp.length)}</div><div class="rv">${fi.imp.map(i=>esc(fi.players[i])).join(", ")}</div></div></div>
+    ${fiTable()}
+  </div>
+  <div class="row"><button class="btn btn-ghost" data-a="fiFinish">${f.finish}</button><button class="btn btn-main" data-a="fiNewRound">${f.newRound}</button></div>`;
+},
+final(){const f=F(),fi=S.fi,rows=fi.players.map(p=>[p,fi.scores[p]||0]).sort((a,b)=>b[1]-a[1]),max=rows.length?rows[0][1]:0,w=rows.filter(r=>r[1]===max);
+  return `<div style="padding-top:10px"><div class="eyebrow">${f.finalH}</div><div class="big">${w.length>1?f.tie:f.winner(esc(w[0][0]))}</div></div>
+  <div class="scroll">${fiTable()}</div>
+  <div class="row"><button class="btn btn-ghost" data-a="fiSettings">${f.settings}</button><button class="btn btn-main" data-a="fiAgain">${f.playAgain}</button></div>`;
+}
+};
+function hubView(){const t=T(),f=F(),encLive=S.screen!=="setup"&&S.screen!=="review",fiLive=S.fi.screen!=="setup";
+  return `<div class="scroll">
+    <div class="toprow" style="padding-top:6px;align-items:flex-start"><div class="logo">The Night<br><span>Game</span></div>${prefs()}</div>
+    <p class="small">${f.hubTag}</p>
+    <div class="games">
+      <button class="game" data-a="goEncore"><div class="eyebrow">${f.encoreMeta}</div><div class="gname">Encore</div><p>${f.encoreDesc}</p>${encLive?`<span class="live">${f.inProgress}</span>`:""}<span class="arrow" aria-hidden="true">→</span></button>
+      <button class="game" data-a="goFake"><div class="eyebrow">${f.fiMeta}</div><div class="gname">Fake ID</div><p>${f.fiDesc}</p>${fiLive?`<span class="live">${f.inProgress}</span>`:""}<span class="arrow" aria-hidden="true">→</span></button>
+    </div>
+  </div>`;
+}
+function fiMenuHTML(){
+  const t=T(),f=F();let inner="";
+  if(S.menu==="main")inner=`<div class="toprow"><div class="eyebrow">${f.menuEyebrow(S.fi.round)}</div>${prefs()}</div><h2>${t.pausedGame}</h2>
+    <button class="btn btn-main" data-a="resume">${t.backGame}</button>
+    <button class="btn btn-ghost" data-a="mScores">${t.scores}</button>
+    <button class="btn btn-ghost" data-a="mSwitch">${f.switchGame}</button>
+    <button class="btn btn-ghost" data-a="mTheme">${f.changeSettings}</button>
+    <button class="btn btn-ghost" data-a="mEnd" style="color:var(--bad)">${t.endGame}</button>`;
+  else if(S.menu==="scores")inner=`<div class="eyebrow">${t.liveScores}</div><h2>Fake ID · ${f.roundN(S.fi.round)}</h2>${fiTable()}<button class="btn btn-ghost center" data-a="menu">${t.backMenu}</button>`;
+  else if(S.menu==="confirmEnd")inner=`<h2>${t.confirmEndH}</h2><p>${f.confirmEndP}</p><div class="row"><button class="btn btn-ghost center" data-a="menu">${t.cancel}</button><button class="btn btn-danger center" data-a="fiDoEnd">${t.finish}</button></div>`;
+  else if(S.menu==="confirmTheme")inner=`<h2>${f.confirmSetH}</h2><p>${f.confirmSetP}</p><div class="row"><button class="btn btn-ghost center" data-a="menu">${t.cancel}</button><button class="btn btn-danger center" data-a="fiDoSet">${t.cancelGame}</button></div>`;
+  return `<div class="veil" data-a="veil"><div class="sheet" role="dialog" aria-modal="true">${inner}</div></div>`;
+}
+
 let lastView="";
 function render(){
   const root=document.documentElement;root.lang=S.lang;root.classList.toggle("th-light",S.theme==="light");
-  const view=S.screen+"|"+(S.menu||"");
+  const view=S.app+"|"+(S.app==="fakeid"?S.fi.screen:S.screen)+"|"+(S.menu||"");
   const sc=app.querySelector(".scroll"),sh=app.querySelector(".sheet");
   const keep=view===lastView,top=keep&&sc?sc.scrollTop:0,stop=keep&&sh?sh.scrollTop:0;
   const ae=document.activeElement,focusId=keep&&ae&&ae.id?ae.id:null;
-  app.innerHTML=V[S.screen]()+menuHTML();
+  app.innerHTML=S.app==="hub"?hubView():S.app==="fakeid"?FV[S.fi.screen]()+(S.menu?fiMenuHTML():""):V[S.screen]()+menuHTML();
   const sc2=app.querySelector(".scroll");if(sc2)sc2.scrollTop=top;
   const sh2=app.querySelector(".sheet");if(sh2)sh2.scrollTop=stop;
   if(focusId){const f=document.getElementById(focusId);if(f)f.focus({preventScroll:true})}
   lastView=view;
-  if(S.screen==="playing")paintTimer();
+  if(S.app==="encore"&&S.screen==="playing")paintTimer();
 }
 
 
@@ -488,9 +693,9 @@ function showIntro(){
   fx.innerHTML=`<div class="lasers"><div class="laser l1"></div><div class="laser l2"></div><div class="laser l3"></div></div><div class="flash"></div><div class="strobe fx-logo">The Night<br><b>Game</b></div><div class="fx-tap">${T().tapStart}</div>`;
   fx.hidden=false;fx.onclick=()=>{audio();closeFx()};
 }
-function showShuffle(){
+function showShuffle(sub){
   const cs=[["-160%","-120%","-40deg","-8deg",0],["160%","-90%","35deg","6deg",.12],["-150%","130%","25deg","-3deg",.24],["150%","120%","-30deg","4deg",.36],["0","-180%","10deg","-1deg",.48]];
-  fx.innerHTML=`<div class="deck">${cs.map(c=>`<div class="fc" style="--x:${c[0]};--y:${c[1]};--r:${c[2]};--rr:${c[3]};animation-delay:${c[4]}s"></div>`).join("")}<div class="fc top" style="--x:0;--y:200%;--r:0deg;--rr:0deg"><div class="msg">${T().gameStarts}</div><div class="sub">${T().cardsN(S.deck.length)}</div></div></div>`;
+  fx.innerHTML=`<div class="deck">${cs.map(c=>`<div class="fc" style="--x:${c[0]};--y:${c[1]};--r:${c[2]};--rr:${c[3]};animation-delay:${c[4]}s"></div>`).join("")}<div class="fc top" style="--x:0;--y:200%;--r:0deg;--rr:0deg"><div class="msg">${T().gameStarts}</div><div class="sub">${sub||T().cardsN(S.deck.length)}</div></div></div>`;
   fx.hidden=false;fx.onclick=closeFx;fxTimer=setTimeout(closeFx,3200);
 }
 
@@ -498,6 +703,7 @@ function showShuffle(){
 app.addEventListener("input",e=>{
   if(e.target.dataset.team!==undefined){S.teams[+e.target.dataset.team].name=e.target.value;save()}
   if(e.target.id==="custom"){S.custom=e.target.value;save()}
+  if(e.target.dataset.player!==undefined){S.fi.players[+e.target.dataset.player]=e.target.value;save()}
   if(e.target.id==="numCards"){S.numCards=clampCards(+e.target.value);const o=document.getElementById("numOut");if(o)o.textContent=S.numCards;save()}
 });
 app.addEventListener("click",e=>{
@@ -512,6 +718,30 @@ app.addEventListener("click",e=>{
     case"secs":S.turnSecs=Math.min(120,Math.max(15,S.turnSecs+ +b.dataset.d));break;
     case"toReview":S.numCards=clampCards(S.numCards);S.teams.forEach((t,k)=>{if(!t.name.trim())t.name=T().teamN(k+1)});buildDeck();S.screen="review";break;
     case"mode":{const m=b.dataset.m,on=S.modes.includes(m);if(on&&S.modes.length===1)break;S.modes=on?S.modes.filter(x=>x!==m):[...S.modes,m];S.numCards=clampCards(S.numCards);}break;
+    case"hub":S.app="hub";break;
+    case"goEncore":S.app="encore";break;
+    case"goFake":S.app="fakeid";break;
+    case"mSwitch":S.menu=null;S.menuPaused=false;S.app="hub";break;
+    case"fiAddP":S.fi.players.push(F().playerN(S.fi.players.length+1));break;
+    case"fiDelP":S.fi.players.splice(i,1);S.fi.impostors=Math.min(S.fi.impostors,maxImps());break;
+    case"fiImp":S.fi.impostors=Math.max(1,Math.min(maxImps(),S.fi.impostors+ +b.dataset.d));break;
+    case"fiDeb":S.fi.debateSecs=Math.max(60,Math.min(600,S.fi.debateSecs+ +b.dataset.d));break;
+    case"fiHint":S.fi.hint=b.dataset.v==="1";break;
+    case"fiMode":{const m=b.dataset.m,on=S.fi.modes.includes(m);if(on&&S.fi.modes.length===1)break;S.fi.modes=on?S.fi.modes.filter(x=>x!==m):[...S.fi.modes,m];}break;
+    case"fiDeal":fiStartGame();save();render();showShuffle(S.fi.players.length+" "+F().players.toLowerCase());return;
+    case"fiNext":if(!S.fi.revealed)return;if(S.fi.turn<S.fi.players.length-1){S.fi.turn++;S.fi.revealed=false}else{S.fi.screen="debate"}break;
+    case"fiClock":if(S.fi.running)fiStop();else fiRun();break;
+    case"fiToVote":fiStop();S.fi.screen="vote";break;
+    case"fiSel":S.fi.sel=i;break;
+    case"fiExpel":if(S.fi.sel==null)return;S.fi.accused=S.fi.sel;S.fi.screen="result";break;
+    case"fiGuess":fiOutcome(b.dataset.v==="1"?"steal":"crew");break;
+    case"fiSeeRes":fiOutcome("escape");break;
+    case"fiNewRound":fiNewRound();break;
+    case"fiFinish":S.fi.screen="final";break;
+    case"fiSettings":S.fi.screen="setup";break;
+    case"fiAgain":fiStartGame();break;
+    case"fiDoEnd":fiStop();S.menu=null;S.menuPaused=false;S.fi.screen="final";break;
+    case"fiDoSet":fiStop();S.menu=null;S.menuPaused=false;S.fi.scores={};S.fi.round=0;S.fi.screen="setup";break;
     case"menu":openMenu("main");return;
     case"veil":if(e.target===b){closeMenu()}return;
     case"resume":closeMenu();return;
@@ -536,7 +766,17 @@ app.addEventListener("click",e=>{
   }
   save();render();
 });
-document.addEventListener("visibilitychange",()=>{if(document.hidden&&S.screen==="playing"&&!S.paused){stopTimer();S.paused=true;save();render()}});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)return;
+  if(S.app==="fakeid"&&S.fi.running){fiStop();save();render()}
+  else if(S.app==="encore"&&S.screen==="playing"&&!S.paused){stopTimer();S.paused=true;save();render()}});
+function holdShow(h){h.classList.add("show")}
+function holdHide(){const h=app.querySelector("[data-hold].show");if(!h)return;h.classList.remove("show");
+  if(S.app==="fakeid"&&!S.fi.revealed){S.fi.revealed=true;save();const nb=app.querySelector('[data-a="fiNext"]');if(nb)nb.disabled=false}}
+app.addEventListener("pointerdown",e=>{const h=e.target.closest("[data-hold]");if(h){e.preventDefault();holdShow(h)}});
+document.addEventListener("pointerup",holdHide);document.addEventListener("pointercancel",holdHide);
+app.addEventListener("contextmenu",e=>{if(e.target.closest("[data-hold]"))e.preventDefault()});
+app.addEventListener("keydown",e=>{const h=e.target.closest&&e.target.closest("[data-hold]");if(h&&(e.key===" "||e.key==="Enter")){e.preventDefault();holdShow(h)}});
+app.addEventListener("keyup",e=>{if(e.key===" "||e.key==="Enter")holdHide()});
 
 /* ---------- Arranque ---------- */
 function validCard(c){return Array.isArray(c)&&(c[1]==="custom"||THEMES[c[1]])}
@@ -546,13 +786,17 @@ function start(data){
   if(!S.lang)S.lang="es";if(!S.theme)S.theme="dark";
   const okModes=Array.isArray(S.modes)&&S.modes.length&&S.modes.every(m=>THEMES[m]);
   const okDeck=(S.deck||[]).every(validCard);
-  if(!okModes||!okDeck){const keep={teams:S.teams,lang:S.lang,custom:S.custom||""};S=Object.assign(fresh(),keep);}
+  if(!okModes||!okDeck){const keep={teams:S.teams,lang:S.lang,theme:S.theme,custom:S.custom||"",fi:S.fi};S=Object.assign(fresh(),keep);}
   if(S.screen==="playing"){S.paused=true}
-  S.menuPaused=false;
+  if(!S.fi)S.fi=fiFresh(S.lang);
+  if(!S.fi.modes.every(m=>THEMES[m]))S.fi.modes=ALL_MODES.slice();
+  S.fi.running=false;
+  if(!S.app||fresh0)S.app="hub";
+  S.menu=null;S.menuPaused=false;
   render();
   if(fresh0)showIntro();
 }
-window.claude?.hot?.snapshot?.(()=>{const c={...S};if(c.screen==="playing")c.paused=true;return c});
+window.claude?.hot?.snapshot?.(()=>{const c={...S,fi:{...S.fi,running:false}};if(c.screen==="playing")c.paused=true;return c});
 window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
 </script>
 
