@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="The Night Game: juego de equipos en tres rondas (descripción, una palabra y mímica) para jugar con el móvil.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>The Night Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap">
+<style>
+/* Layout: una pantalla de juego a altura completa; marcador arriba, carta al centro, acciones al pulgar. Estética tipo Xceed: fondo negro, tipografía blanca muy gruesa, acento rojo-coral, botones con contorno y esquinas casi rectas. Oscuro por defecto con selector claro/oscuro propio. */
+:root{
+  --bg:#000000;
+  --surface:#131313;
+  --surface-2:#1f1f1f;
+  --ink:#ffffff;
+  --ink-soft:#9b9b9b;
+  --line:rgba(255,255,255,.16);
+  --accent:#ff4a2b;
+  --accent-ink:#ffffff;
+  --accent-soft:rgba(255,74,43,.14);
+  --good:#25c46f;
+  --good-ink:#04210f;
+  --bad:#ff4a2b;
+  --veil:rgba(0,0,0,.7);
+  --font:"Manrope", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --r:6px;
+  color-scheme:dark;
+}
+:root.th-light{
+  --bg:#ffffff;
+  --surface:#f3f3f3;
+  --surface-2:#e7e7e7;
+  --ink:#000000;
+  --ink-soft:#5c5c5c;
+  --line:rgba(0,0,0,.14);
+  --accent:#e8381b;
+  --accent-ink:#ffffff;
+  --accent-soft:rgba(232,56,27,.10);
+  --good:#1fa85d;
+  --good-ink:#ffffff;
+  --bad:#e8381b;
+  --veil:rgba(0,0,0,.45);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;-webkit-tap-highlight-color:transparent;overscroll-behavior:none;transition:background .2s,color .2s}
+#app{height:100%;max-width:520px;margin:0 auto;padding-inline:16px;padding-block:14px 18px;display:flex;flex-direction:column;gap:14px}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{margin:0;font-weight:800;text-wrap:balance;letter-spacing:-.02em}
+p{margin:0;line-height:1.45}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:20px;min-height:0;padding-bottom:4px;overflow-anchor:none}
+
+/* Botones */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:54px;padding:0 20px;border-radius:var(--r);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;transition:transform .08s,background .15s}
+.btn:active{transform:scale(.98)}
+.btn-main{background:var(--accent);color:var(--accent-ink)}
+.btn-ghost{border:1.5px solid var(--ink)}
+.btn-good{background:var(--good);color:var(--good-ink)}
+.btn-bad{border:1.5px solid var(--ink)}
+.btn-danger{background:var(--bad);color:#fff}
+.btn[disabled]{opacity:.3;pointer-events:none}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+.small{font-size:13px;color:var(--ink-soft);font-weight:500}
+.toprow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.link{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1.5px;padding:6px 0}
+
+/* Ajustes */
+.logo{font-weight:800;font-size:clamp(42px,13vw,60px);line-height:.92;letter-spacing:-.045em}
+.logo span{color:var(--accent)}
+.prefs{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.seg{display:flex;border:1.5px solid var(--line);border-radius:var(--r);padding:3px;gap:2px;flex:none}
+.seg button{min-width:40px;height:32px;border-radius:4px;font-weight:800;font-size:12px;letter-spacing:.06em;color:var(--ink-soft);display:grid;place-items:center;padding:0 8px}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.seg svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.field{display:flex;flex-direction:column;gap:10px}
+.field label{font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.field label .small{text-transform:none;letter-spacing:0}
+.team-row{display:flex;align-items:center;gap:10px}
+.dot{width:12px;height:12px;border-radius:50%;flex:none}
+.team-row input{flex:1;min-width:0;height:48px;border-radius:var(--r);border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:0 14px;font:inherit;font-weight:700}
+.icon-btn{width:44px;height:44px;border-radius:var(--r);border:1.5px solid var(--line);font-size:20px;font-weight:600;flex:none;display:grid;place-items:center}
+.icon-btn:active{background:var(--surface-2)}
+.stepper{display:flex;align-items:center;gap:10px;align-self:flex-start}
+.stepper output{min-width:56px;text-align:center;font-weight:800;font-size:24px;font-variant-numeric:tabular-nums}
+textarea{width:100%;min-height:84px;border-radius:var(--r);border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:12px 14px;font:inherit;font-weight:500;resize:vertical}
+textarea::placeholder{color:var(--ink-soft)}
+.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.mode{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:14px;border-radius:var(--r);background:var(--surface);border:1.5px solid transparent;min-width:0;transition:border-color .15s,background .15s}
+.mode.on{border-color:var(--accent);background:var(--accent-soft)}
+.mname{font-weight:800;font-size:18px;line-height:1.1;letter-spacing:-.01em;padding-right:26px}
+.mtag{font-size:12.5px;color:var(--ink-soft);line-height:1.3;font-weight:500}
+.lvl{margin-top:6px;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:3px;border:1px solid var(--line);color:var(--ink-soft)}
+.mode.on .lvl{border-color:var(--accent);color:var(--accent)}
+.lvl.god{background:var(--accent);border-color:var(--accent);color:#fff}
+.mode.on .lvl.god{color:#fff}
+.mode.wide{grid-column:1/-1}
+.check{position:absolute;top:12px;right:12px;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800}
+.mode.on .check{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* Revisión */
+.review-list{display:flex;flex-direction:column}
+.review-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.review-item .t{flex:1;min-width:0;font-weight:700}
+.review-item .c{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.review-item button{height:36px;padding:0 12px;border-radius:4px;border:1.5px solid var(--line);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;flex:none}
+
+/* Marcador */
+.top{display:flex;gap:8px;align-items:stretch}
+.board{flex:1;min-width:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.board::-webkit-scrollbar{display:none}
+.chip{flex:1 0 auto;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--r);background:var(--surface);border:1.5px solid transparent;font-size:13px;font-weight:700;white-space:nowrap}
+.chip b{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;margin-left:auto;padding-left:6px}
+.chip.on{border-color:var(--accent)}
+.menu-btn{flex:none;width:46px;min-height:44px;border-radius:var(--r);border:1.5px solid var(--line);display:grid;place-items:center}
+.menu-btn svg{width:20px;height:20px;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round}
+.roundbar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pips{display:flex;gap:4px}
+.pip{width:24px;height:4px;border-radius:2px;background:var(--line)}
+.pip.done{background:var(--ink-soft)}
+.pip.now{background:var(--accent)}
+
+/* Juego */
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;min-height:0}
+.timer{position:relative;width:112px;height:112px;flex:none}
+.timer svg{width:100%;height:100%;transform:rotate(-90deg)}
+.timer .trk{fill:none;stroke:var(--line);stroke-width:7}
+.timer .arc{fill:none;stroke:var(--ink);stroke-width:7;stroke-linecap:round}
+.timer.hot .arc{stroke:var(--accent)}
+.timer .num{position:absolute;inset:0;display:grid;place-items:center;font-weight:800;font-size:40px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.timer.hot .num{color:var(--accent)}
+.card{width:100%;max-width:400px;aspect-ratio:5/6;max-height:46vh;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;position:relative;overflow:hidden}
+.card .cat{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.card .word{font-weight:800;font-size:clamp(30px,9vw,44px);line-height:1.02;letter-spacing:-.03em;text-wrap:balance;overflow-wrap:anywhere}
+.card .word.long{font-size:clamp(24px,7vw,34px)}
+.card .word.xlong{font-size:clamp(20px,5.8vw,27px);line-height:1.12}
+.card.back{background:var(--surface);color:var(--ink);border:1.5px solid var(--accent);background-image:repeating-linear-gradient(-45deg,transparent 0 12px,var(--accent-soft) 12px 14px)}
+.card.back .word{font-size:26px;text-transform:uppercase;letter-spacing:.02em}
+.card.pop{animation:pop .2s ease-out}
+@keyframes pop{from{transform:scale(.94);opacity:.5}to{transform:none;opacity:1}}
+.pause-veil{position:absolute;inset:0;background:var(--surface);color:var(--ink);display:grid;place-items:center;font-weight:800;font-size:22px;letter-spacing:.08em;text-transform:uppercase}
+.rule{border:1.5px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:4px;width:100%}
+.rule h3{font-size:28px;display:flex;align-items:center;gap:10px}
+.left{font-size:12px;font-weight:600;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+
+/* Fin de turno / ronda */
+.big{font-weight:800;font-size:clamp(38px,11vw,54px);line-height:.98;letter-spacing:-.04em;text-wrap:balance}
+.list{display:flex;flex-direction:column}
+.li{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);font-weight:700}
+.li .t{flex:1;min-width:0}
+.li.off .t{text-decoration:line-through;opacity:.45}
+.li button{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:4px;border:1.5px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{padding:12px 8px;text-align:right;border-bottom:1px solid var(--line);font-weight:600}
+th:first-child,td:first-child{text-align:left;padding-left:0}
+th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:800}
+td.tot{font-weight:800;font-size:20px}
+tr.win td{color:var(--accent)}
+
+/* Menú */
+.veil{position:fixed;inset:0;background:var(--veil);z-index:10;display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:520px;background:var(--bg);border-top:1.5px solid var(--line);border-radius:12px 12px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;max-height:90%;overflow-y:auto;animation:up .2s ease-out}
+@keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}
+.sheet h2{font-size:28px;margin-bottom:4px}
+.sheet .btn{justify-content:flex-start}
+.sheet .btn.center{justify-content:center}
+.sheet .toprow{align-items:flex-start}
+.slide-row{display:flex;align-items:center;gap:10px}
+.slide-row input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:32px}
+.slide-row output{min-width:44px;text-align:right;font-weight:800;font-size:22px;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){.sheet,.card.pop{animation:none}.btn,body,.mode{transition:none}}
+@media (max-height:640px){.card{max-height:38vh}.timer{width:90px;height:90px}.timer .num{font-size:32px}}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+const COLORS=["#ff7a59","#2fd68a","#b69cff","#4cc9f0","#ff6fae","#ffd23f"];
+const THEMES={
+ famosos:{name:"Personajes famosos",tag:"Iconos de todo el mundo, de la historia a los memes",pool:"Albert Einstein|Marie Curie|Isaac Newton|Charles Darwin|Nikola Tesla|Stephen Hawking|Galileo Galilei|Leonardo da Vinci|Miguel Ángel=Michelangelo|Pablo Picasso|Salvador Dalí|Frida Kahlo|Vincent van Gogh|Andy Warhol|Banksy|William Shakespeare|Miguel de Cervantes|Gabriel García Márquez|J.K. Rowling|Agatha Christie|Stephen King|Cleopatra|Julio César=Julius Caesar|Napoleón=Napoleon|Alejandro Magno=Alexander the Great|Gengis Kan=Genghis Khan|Tutankamón=Tutankhamun|Cristóbal Colón=Christopher Columbus|Marco Polo|Juana de Arco=Joan of Arc|Isabel II=Queen Elizabeth II|Lady Di=Princess Diana|Carlos III=King Charles III|Enrique VIII=Henry VIII|María Antonieta=Marie Antoinette|Reina Victoria=Queen Victoria|Nelson Mandela|Mahatma Gandhi|Martin Luther King|Abraham Lincoln|John F. Kennedy|Barack Obama|Donald Trump|Vladimir Putin|Kim Jong-un|Winston Churchill|Angela Merkel|Fidel Castro|Che Guevara|Papa Francisco=Pope Francis|Dalái Lama=Dalai Lama|Madre Teresa=Mother Teresa|Greta Thunberg|Malala|Neil Armstrong|Yuri Gagarin|Amelia Earhart|Jacques Cousteau|Elon Musk|Jeff Bezos|Bill Gates|Steve Jobs|Mark Zuckerberg|Walt Disney|Coco Chanel|Oprah Winfrey|Kim Kardashian|Kanye West|Paris Hilton|Taylor Swift|Beyoncé|Rihanna|Lady Gaga|Shakira|Michael Jackson|Elvis Presley|Madonna|Marilyn Monroe|Charles Chaplin=Charlie Chaplin|Audrey Hepburn|Leonardo DiCaprio|Brad Pitt|Angelina Jolie|Tom Cruise|Johnny Depp|Keanu Reeves|Nicolas Cage|Danny DeVito|Will Smith|Dwayne «La Roca» Johnson=Dwayne \"The Rock\" Johnson|Arnold Schwarzenegger|Jackie Chan|Bruce Lee|Chuck Norris|Mr. Bean|Jim Carrey|Robin Williams|Morgan Freeman|Samuel L. Jackson|Meryl Streep|Tom Hanks|Zendaya|Timothée Chalamet|Ryan Gosling|Margot Robbie|Pedro Pascal|Leo Messi|Cristiano Ronaldo|Pelé|Maradona|Michael Jordan|LeBron James|Usain Bolt|Muhammad Ali|Mike Tyson|Serena Williams|Roger Federer|Rafa Nadal|Tiger Woods|Michael Phelps|Simone Biles|Lewis Hamilton|Conor McGregor|Hulk Hogan|MrBeast|Khaby Lame|Gordon Ramsay|Salt Bae|Rick Astley|Bob Ross|Steve Irwin|David Attenborough|Bear Grylls|Jamie Oliver|Martha Stewart|Simon Cowell|David Hasselhoff|Pamela Anderson|Ozzy Osbourne|Snoop Dogg|Mr. T|Hide the Pain Harold|Rasputín=Rasputin|Mata Hari|Harry Houdini|Al Capone|Sigmund Freud|Karl Marx|Platón=Plato|Sócrates=Socrates|Aristóteles=Aristotle|Buda=Buddha|Zinedine Zidane|Bob Dylan|Einstein sacando la lengua=Einstein sticking his tongue out|La bofetada de Will Smith en los Óscar=Will Smith's slap at the Oscars|El selfie de Ellen en los Óscar=Ellen's selfie at the Oscars|Elon Musk comprando Twitter=Elon Musk buying Twitter|El Papa en un plumífero=The Pope in a puffer jacket|Kim Kardashian rompiendo internet=Kim Kardashian breaking the internet|Gordon Ramsay gritando en la cocina=Gordon Ramsay yelling in the kitchen|Tom Cruise saltando en el sofá de Oprah=Tom Cruise jumping on Oprah's couch|Keanu Reeves sentado triste en un banco=Sad Keanu on a bench|Nicolas Cage gritando=Nicolas Cage screaming|Rickroll|Barack Obama soltando el micro=Obama's mic drop|Usain Bolt haciendo el rayo=Usain Bolt's lightning pose|Michael Jackson haciendo el moonwalk=Michael Jackson doing the moonwalk|Marilyn y el vestido al viento=Marilyn's flying white dress|Neil Armstrong pisando la Luna=Neil Armstrong walking on the Moon|Napoleón con la mano en el chaleco=Napoleon with his hand in his coat|Cleopatra en la bañera de leche=Cleopatra in a milk bath|Newton y la manzana=Newton and the apple|Van Gogh cortándose la oreja=Van Gogh cutting off his ear|Steve Jobs presentando el iPhone=Steve Jobs unveiling the iPhone|Mike Tyson mordiendo una oreja=Mike Tyson biting an ear|Maradona y la mano de Dios=Maradona's Hand of God|Bob Ross pintando arbolitos felices=Bob Ross painting happy little trees|Steve Irwin con un cocodrilo=Steve Irwin with a crocodile|Chuck Norris contando hasta el infinito=Chuck Norris counting to infinity|Mr. Bean con su osito=Mr. Bean and his teddy|Jeff Bezos en un cohete=Jeff Bezos in a rocket|Kanye West interrumpiendo a Taylor Swift=Kanye West interrupting Taylor Swift|Shakira moviendo las caderas=Shakira's hips|Freddie Mercury en Live Aid=Freddie Mercury at Live Aid|David Attenborough susurrando a un gorila=David Attenborough whispering to a gorilla|Bear Grylls bebiendo su propio pis=Bear Grylls drinking his own pee|Salt Bae echando sal=Salt Bae sprinkling salt|Khaby Lame explicando lo obvio=Khaby Lame explaining the obvious|MrBeast regalando dinero=MrBeast giving away money|Elvis moviendo la pelvis=Elvis shaking his hips|Charlie Chaplin con bastón y bombín=Charlie Chaplin with cane and bowler hat|Einstein despeinado=Einstein's crazy hair|Darwin y la evolución del mono=Darwin and the ape evolution chart|Gandhi en huelga de hambre=Gandhi on hunger strike|Lady Gaga con el vestido de carne=Lady Gaga in the meat dress|Rihanna con el paraguas=Rihanna with an umbrella|Beyoncé haciendo Single Ladies=Beyoncé doing Single Ladies|Arnold: «Volveré»=Arnold: \"I'll be back\"|Leonardo DiCaprio en la puerta del Titanic=DiCaprio on the Titanic door"},
+ cine:{name:"Cine",tag:"Películas, escenas míticas y personajes",pool:"Titanic|Star Wars|El Padrino=The Godfather|Pulp Fiction|Matrix=The Matrix|Jurassic Park|Regreso al futuro=Back to the Future|E.T.|Tiburón=Jaws|Forrest Gump|El rey león=The Lion King|Toy Story|Buscando a Nemo=Finding Nemo|Shrek|Frozen|Harry Potter|El señor de los anillos=The Lord of the Rings|Indiana Jones|Piratas del Caribe=Pirates of the Caribbean|Los Vengadores=The Avengers|Spider-Man|Batman|Superman|Iron Man|Wonder Woman|Black Panther|Avatar|Interstellar|Origen=Inception|Oppenheimer|Barbie|La La Land|Gladiator|Rocky|Rambo|Terminator|Alien|Blade Runner|Mad Max|Kill Bill|Ciudadano Kane=Citizen Kane|Casablanca|Psicosis=Psycho|El resplandor=The Shining|La naranja mecánica=A Clockwork Orange|Taxi Driver|Scarface|Uno de los nuestros=Goodfellas|El lobo de Wall Street=The Wolf of Wall Street|El club de la lucha=Fight Club|Seven|El silencio de los corderos=The Silence of the Lambs|El exorcista=The Exorcist|Halloween|Scream|It|Pesadilla en Elm Street=A Nightmare on Elm Street|Parásitos=Parasite|El viaje de Chihiro=Spirited Away|Mi vecino Totoro=My Neighbor Totoro|Amélie|Cinema Paradiso|La vida es bella=Life Is Beautiful|Slumdog Millionaire|Tigre y dragón=Crouching Tiger, Hidden Dragon|Godzilla|King Kong|Los Cazafantasmas=Ghostbusters|Los Goonies=The Goonies|Gremlins|Karate Kid=The Karate Kid|Top Gun|Dirty Dancing|Grease|Pretty Woman|Ghost|Mamma Mia|Solo en casa=Home Alone|Señora Doubtfire=Mrs. Doubtfire|Jumanji|Men in Black|Independence Day|Armageddon|Náufrago=Cast Away|Salvar al soldado Ryan=Saving Private Ryan|La lista de Schindler=Schindler's List|Apocalypse Now|2001: Una odisea del espacio=2001: A Space Odyssey|El show de Truman=The Truman Show|Atrapado en el tiempo=Groundhog Day|Resacón en Las Vegas=The Hangover|Supersalidos=Superbad|American Pie|Mean Girls|Clueless|Austin Powers|Ace Ventura|La máscara=The Mask|Zoolander|Borat|Dos tontos muy tontos=Dumb and Dumber|Los padres de ella=Meet the Parents|Love Actually|Notting Hill|El diario de Bridget Jones=Bridget Jones's Diary|Cuando Harry encontró a Sally=When Harry Met Sally|Desayuno con diamantes=Breakfast at Tiffany's|Cantando bajo la lluvia=Singin' in the Rain|El mago de Oz=The Wizard of Oz|Lo que el viento se llevó=Gone with the Wind|Sonrisas y lágrimas=The Sound of Music|Mary Poppins|Charlie y la fábrica de chocolate=Charlie and the Chocolate Factory|Eduardo Manostijeras=Edward Scissorhands|Pesadilla antes de Navidad=The Nightmare Before Christmas|Beetlejuice|Up|Wall-E|Coco|Del revés=Inside Out|Ratatouille|Los increíbles=The Incredibles|Monstruos S.A.=Monsters, Inc.|Gru, mi villano favorito=Despicable Me|Minions|Kung Fu Panda|Aladdín=Aladdin|La sirenita=The Little Mermaid|Blancanieves=Snow White|Cenicienta=Cinderella|Fast & Furious|Misión imposible=Mission: Impossible|James Bond|John Wick|Die Hard|Joker|Dune|Deadpool|Hannibal Lecter|Darth Vader|Yoda|Gandalf|Gollum|Jack Sparrow|Forrest Gump corriendo=Forrest Gump running|Vito Corleone|Tony Montana|Chewbacca|R2-D2|Terminator: «Hasta la vista, baby»=Terminator: \"Hasta la vista, baby\"|Freddy Krueger|Chucky|Pennywise|Capitán América=Captain America|Thanos|Buzz Lightyear|Woody|Elsa|Olaf|Simba|Dory|Rocky subiendo las escaleras=Rocky running up the steps|La escena de la ducha de Psicosis=The Psycho shower scene|«Que la fuerza te acompañe»=\"May the Force be with you\"|«Yo soy tu padre»=\"I am your father\"|Neo esquivando balas=Neo dodging bullets|«Le haré una oferta que no podrá rechazar»=\"I'll make him an offer he can't refuse\"|El beso de Spider-Man al revés=The upside-down Spider-Man kiss|«Yo soy Groot»=\"I am Groot\"|Jack y Rose en la proa=Jack and Rose on the bow|«Houston, tenemos un problema»=\"Houston, we have a problem\"|E.T. volando en bici=E.T. flying on a bike|El chasquido de Thanos=Thanos's snap|Los Óscar=The Oscars|Festival de Cannes=Cannes Film Festival|Alfombra roja=Red carpet|Paseo de la Fama=Walk of Fame|Hollywood|Bollywood|Palomitas=Popcorn|Claqueta=Clapperboard|Escena postcréditos=Post-credits scene|Spoiler|Doble de riesgo=Stunt double|Cine mudo=Silent film|Autocine=Drive-in cinema|Tráiler=Trailer|Stanley Kubrick|Alfred Hitchcock|Quentin Tarantino|Steven Spielberg|Christopher Nolan|Tim Burton|Martin Scorsese|Hayao Miyazaki|Wes Anderson|Guillermo del Toro|James Cameron|George Lucas|Greta Gerwig"},
+ musica:{name:"Música",tag:"Artistas, himnos y momentazos",pool:"The Beatles|The Rolling Stones|Queen|Freddie Mercury|Bohemian Rhapsody|David Bowie|Bob Marley|Nirvana|Kurt Cobain|Jimi Hendrix|Madonna|Prince|ABBA|AC/DC|Metallica|Daft Punk|Michael Jackson|Moonwalk|Thriller|Elvis Presley|Amy Winehouse|Billie Eilish|Bad Bunny|Rosalía|Shakira|Beyoncé|Rihanna|Lady Gaga|Taylor Swift|Adele|Ed Sheeran|Bruno Mars|The Weeknd|Drake|Eminem|Tupac|Snoop Dogg|Kanye West|Jay-Z|Nicki Minaj|Cardi B|Dua Lipa|Harry Styles|One Direction|Justin Bieber|Britney Spears|Christina Aguilera|Spice Girls|Backstreet Boys|Oasis|Coldplay|Radiohead|U2|Bono|The Police|Sting|Pink Floyd|Led Zeppelin|The Doors|Jim Morrison|Janis Joplin|Bob Dylan|Johnny Cash|Frank Sinatra|Louis Armstrong|Ray Charles|Aretha Franklin|Whitney Houston|Mariah Carey|Celine Dion|Tina Turner|Stevie Wonder|James Brown|Elton John|Mick Jagger|Kiss|Guns N' Roses|Bon Jovi|Red Hot Chili Peppers|Linkin Park|Green Day|Foo Fighters|Arctic Monkeys|Gorillaz|The Killers|Imagine Dragons|Maroon 5|BTS|BLACKPINK|PSY|Gangnam Style|Despacito|Macarena|Ricky Martin|Enrique Iglesias|Julio Iglesias|Daddy Yankee|J Balvin|Karol G|Celia Cruz|Gloria Estefan|Santana|Pitbull|David Guetta|Avicii|Mozart|Beethoven|Bach|Vivaldi|Las cuatro estaciones=The Four Seasons|Tchaikovsky|El lago de los cisnes=Swan Lake|Luciano Pavarotti|Ópera=Opera|Woodstock|Live Aid|Coachella|Glastonbury|Tomorrowland|Eurovisión=Eurovision|Premios Grammy=Grammy Awards|MTV|Super Bowl Halftime Show|Like a Prayer|Billie Jean|Smells Like Teen Spirit|Stairway to Heaven|Hotel California|Imagine|Yesterday|Wannabe|...Baby One More Time|Never Gonna Give You Up|YMCA|Dancing Queen|I Will Survive|My Heart Will Go On|We Are the Champions|Sweet Child O' Mine|Shape of You|Uptown Funk|Bad Guy|Happy|Barbie Girl|Ketchup Song=The Ketchup Song|Who Let the Dogs Out|Baby Shark|Crazy Frog|Air guitar|Pogo=Mosh pit|Mechero en un concierto=Lighter at a concert|Bis=Encore|Gira mundial=World tour|Disco de platino=Platinum record|Karaoke|DJ|Autotune|Playback=Lip-syncing|Videoclip=Music video|Vinilo=Vinyl record|Casete=Cassette tape|Walkman|Gramola=Jukebox|Tocadiscos=Record player|Guitarra eléctrica=Electric guitar|Batería=Drum kit|Violín=Violin|Violonchelo=Cello|Saxofón=Saxophone|Trompeta=Trumpet|Arpa=Harp|Ukelele=Ukulele|Theremín=Theremin|Sintetizador=Synthesizer|Director de orquesta=Conductor|Partitura=Sheet music|Reguetón=Reggaeton|Jazz|Blues|Punk|Heavy metal|Música disco=Disco|Hip hop|K-pop|Gospel|Rock and roll|Grunge|Techno|Salsa|Tango|Flamenco|Reggae|Ozzy mordiendo un murciélago=Ozzy biting a bat|Miley Cyrus en la bola de demolición=Miley Cyrus on a wrecking ball|Beyoncé y el ascensor=Beyoncé and the elevator|Elvis en Las Vegas=Elvis in Las Vegas|Los Beatles cruzando Abbey Road=The Beatles crossing Abbey Road|Freddie Mercury: «Ay-oh!»=Freddie Mercury: \"Ay-oh!\"|Kurt Cobain en el MTV Unplugged=Kurt Cobain at MTV Unplugged|Rompiendo una guitarra en el escenario=Smashing a guitar on stage"},
+ futbol:{name:"Fútbol",tag:"Estrellas, clubes y momentos míticos",pool:"Pelé|Maradona|Johan Cruyff|Alfredo Di Stéfano|Franz Beckenbauer|Zinedine Zidane|Ronaldinho|Ronaldo Nazário|Leo Messi|Cristiano Ronaldo|Kylian Mbappé|Erling Haaland|Lamine Yamal|Neymar|Luka Modrić|Andrés Iniesta|Xavi Hernández|Iker Casillas|Sergio Ramos|Thierry Henry|Paolo Maldini|Lev Yashin|George Best|Eric Cantona|David Beckham|Zlatan Ibrahimović|Kaká|Rivaldo|Romário|Roberto Carlos|Cafú|Garrincha|Eusébio|Ferenc Puskás|Marco van Basten|Ruud Gullit|Dennis Bergkamp|Roberto Baggio|Francesco Totti|Alessandro Del Piero|Andrea Pirlo|Gianluigi Buffon|Fabio Cannavaro|Marco Materazzi|Luís Figo|Samuel Eto'o|Didier Drogba|George Weah|Wayne Rooney|Steven Gerrard|Frank Lampard|Luis Suárez|Karim Benzema|Antoine Griezmann|Robert Lewandowski|Mohamed Salah|Kevin De Bruyne|Harry Kane|Vinícius Júnior|Jude Bellingham|Bukayo Saka|Son Heung-min|Virgil van Dijk|Manuel Neuer|Oliver Kahn|Peter Schmeichel|Bobby Charlton|Gary Lineker|Michel Platini|Gerd Müller|Lothar Matthäus|Miroslav Klose|Hugo Sánchez|Carlos Valderrama|René Higuita|Gabriel Batistuta|Juan Román Riquelme|Ángel Di María|Sergio Agüero|Andriy Shevchenko|Hristo Stoichkov|Gheorghe Hagi|Pavel Nedvěd|Megan Rapinoe|Alex Morgan|Marta|Alexia Putellas|Aitana Bonmatí|Sam Kerr|Pep Guardiola|José Mourinho|Carlo Ancelotti|Alex Ferguson|Jürgen Klopp|Arsène Wenger|Diego Simeone|Marcelo Bielsa|Arrigo Sacchi|Real Madrid|FC Barcelona|Manchester United|Liverpool|Manchester City|Arsenal|Chelsea|Juventus|AC Milan|Inter de Milán=Inter Milan|Bayern de Múnich=Bayern Munich|Borussia Dortmund|PSG|Ajax|Boca Juniors|River Plate|Flamengo|Camp Nou|Santiago Bernabéu|Anfield|Old Trafford|Wembley|Maracaná|San Siro|La Bombonera|Estadio Azteca=Azteca Stadium|La mano de Dios=The Hand of God|El gol del siglo de Maradona=Maradona's Goal of the Century|El cabezazo de Zidane=Zidane's headbutt|La final de Estambul 2005=The 2005 Istanbul final|La mano de Henry=Henry's handball|El Maracanazo|El 7-1 de Alemania a Brasil=Germany 7-1 Brazil|El mordisco de Luis Suárez=Luis Suárez's bite|Iniesta en la final de 2010=Iniesta in the 2010 final|Messi levantando el Mundial=Messi lifting the World Cup|Cristiano gritando «Siuuu»=Cristiano shouting \"Siuuu\"|La celebración del Bebeto meciendo al bebé=Bebeto's baby-rocking celebration|La chilena de Cristiano a la Juve=Ronaldo's bicycle kick against Juventus|La patada de kung-fu de Cantona=Cantona's kung-fu kick|El escorpión de Higuita=Higuita's scorpion kick|El penalti de Baggio en 1994=Baggio's missed penalty in 1994|Mourinho mandando callar=Mourinho shushing the crowd|Klopp abrazando a todo el mundo=Klopp hugging everyone|Pulpo Paul=Paul the Octopus|Gol fantasma=Ghost goal|Mundial=World Cup|Champions League|Eurocopa=The Euros|Copa América|Premier League|LaLiga|Serie A|Bundesliga|Balón de Oro=Ballon d'Or|Bota de Oro=Golden Boot|La Orejona=The \"Big Ears\" trophy|Himno de la Champions=Champions League anthem|El Clásico|Derbi=Derby|Panenka|Chilena=Bicycle kick|Rabona|Elástica=Elastico|Caño=Nutmeg|Sombrerito=Rainbow flick|Tijereta=Scissor kick|Fuera de juego=Offside|VAR|Tarjeta roja=Red card|Tarjeta amarilla=Yellow card|Hat-trick|Remontada=Comeback|Tanda de penaltis=Penalty shootout|Gol olímpico=Olympic goal|Gol en propia puerta=Own goal|Córner=Corner kick|Saque de banda=Throw-in|Falta directa=Direct free kick|Barrera=Defensive wall|Prórroga=Extra time|Tiempo de descuento=Stoppage time|Aparcar el autobús=Parking the bus|Tiki-taka|Catenaccio|Gegenpressing|Falso nueve=False nine|Portero=Goalkeeper|Árbitro=Referee|Brazalete de capitán=Captain's armband|Piscinazo=Diving|Cláusula de rescisión=Release clause|Rueda de prensa=Press conference|La ola=Mexican wave|Vuvuzela|Bufanda=Football scarf|Ultras|Álbum de cromos Panini=Panini sticker album|Futbolín=Foosball|FIFA en la PlayStation=FIFA on the PlayStation|Oliver y Benji=Captain Tsubasa|Ted Lasso"},
+ videojuegos:{name:"Videojuegos",tag:"Sagas, personajes y consolas",pool:"Super Mario|Luigi|Bowser|Princesa Peach=Princess Peach|Yoshi|Toad|Wario|Link|Zelda|Ganondorf|Sonic|Tails|Dr. Eggman|Pac-Man|Fantasmas de Pac-Man=Pac-Man ghosts|Tetris|Minecraft|Creeper|Steve de Minecraft=Minecraft Steve|Fortnite|Among Us|Impostor|Pokémon|Pikachu|Charmander|Mewtwo|Ash Ketchum|Pokéball|Kratos|Lara Croft|Master Chief|Solid Snake|Donkey Kong|Diddy Kong|Kirby|Samus Aran|Metroid|Street Fighter|Ryu|Chun-Li|Hadouken|Mortal Kombat|Fatality|Sub-Zero|Tekken|GTA|CJ de San Andreas=CJ from San Andreas|Los Sims|Plumbob|Animal Crossing|Tom Nook|The Last of Us|Dark Souls|Elden Ring|Half-Life|Gordon Freeman|Portal|Pastel de Portal=The Portal cake|Space Invaders|Asteroids|Pong|Frogger|Galaga|Crash Bandicoot|Spyro|Rayman|Prince of Persia|Sackboy|Ratchet & Clank|Jak and Daxter|God of War|Uncharted|Nathan Drake|Horizon|Bloodborne|Sekiro|Hollow Knight|Celeste|Cuphead|Undertale|Stardew Valley|Terraria|Roblox|Rocket League|Fall Guys|Brawl Stars|Clash Royale|Clash of Clans|Angry Birds|Candy Crush|Flappy Bird|Pokémon GO|Wii Sports|Wii Fit|Just Dance|Guitar Hero|SingStar|Buzz!|Brain Training|Nintendogs|Tamagotchi|Game Boy|Game Boy Color|Nintendo DS|Nintendo 64|Super Nintendo|NES|Mega Drive|Dreamcast|PlayStation|PSP|Xbox|Nintendo Switch|Mando de Wii=Wii Remote|Steam|Atari|Arcade|Recreativa=Arcade machine|Mario Kart|Caparazón azul=Blue shell|Plátano de Mario Kart=Mario Kart banana|Super Smash Bros|Resident Evil|Némesis=Nemesis|Silent Hill|Final Fantasy|Cloud Strife|Chocobo|Kingdom Hearts|Dragon Quest|Assassin's Creed|Ezio Auditore|League of Legends|Counter-Strike|Overwatch|Valorant|Call of Duty|Battlefield|Halo|Gears of War|Doom|Wolfenstein|Quake|World of Warcraft|StarCraft|Diablo|Age of Empires|Civilization|SimCity|Los Lemmings=Lemmings|Worms|Commandos|Pro Evolution Soccer|FIFA|NBA 2K|Tony Hawk's Pro Skater|Need for Speed|Gran Turismo|Red Dead Redemption|Arthur Morgan|The Witcher|Geralt de Rivia=Geralt of Rivia|Skyrim|Fallout|Cyberpunk 2077|Bioshock|Mass Effect|Metal Gear Solid|Caja de cartón de Snake=Snake's cardboard box|Splatoon|Pikmin|Earthbound|Banjo-Kazooie|Professor Layton|Phoenix Wright|Código Konami=Konami Code|Speedrun|Jefe final=Final boss|Game Over|Pantalla de carga=Loading screen|Partida guardada=Save file|Modo cooperativo=Co-op mode|Pantalla partida=Split screen|Vida extra=Extra life|Power-up|Champiñón=Super Mushroom|Estrella de invencibilidad=Invincibility star|Moneda=Coin|Barra de vida=Health bar|Logro desbloqueado=Achievement unlocked|Easter egg|Lag|Campero=Camper|Rage quit|NPC|Mapa abierto=Open world|Loot box|DLC|Tutorial|Cinemática=Cutscene"},
+ xceed:{name:"XCEED",tag:"DJs, clubes, fiestas y festivales underground",pool:"Berghain|Panorama Bar|Tresor|Watergate|Sisyphos|KitKat Club|Kater Blau|Robert Johnson|Fabric|Printworks|Shelter Amsterdam|Rex Club|Output|The Warehouse Project|Space Ibiza|Amnesia|DC-10|Pacha Ibiza|Ushuaïa|Hï Ibiza|Privilege|Café del Mar|Razzmatazz|INPUT High Fidelity|Nitsa|Moog Barcelona|Macarena Club|Laut|Fabrik|Cuenca Club|Barraca|Spook Club|Sound Factory|Ku Barcelona|Bataplán|Opium Barcelona|Circoloco|Elrow|Cocoon|Music On|ANTS|Paradise|Solid Grooves|Afterlife|Keinemusik|Defected|Glitterbox|Vagabundos|Drumcode|Awakenings|Time Warp|Monegros Desert Festival|Sónar|Sónar de Noche|Off Week|Brunch Electronik|DGTL|Dekmantel|Movement Detroit|Tomorrowland|Amsterdam Dance Event|Fusion Festival|Burning Man|Kappa FuturFestival|Love Parade|Boiler Room|Cercle|HÖR Berlin|Resident Advisor|Dimensions Festival|Medusa Festival|Aquasella|Dreambeach|Paraíso Festival|Creamfields|Ultra Music Festival|Music On Malta|Días de Campo|Kompakt|Innervisions|Ostgut Ton|Warp Records|Ninja Tune|Toolroom|Hot Creations|Crosstown Rebels|Carl Cox|Richie Hawtin|Sven Väth|Ricardo Villalobos|Loco Dice|Marco Carola|Jamie Jones|Seth Troxler|The Martinez Brothers|Solomun|Dixon|Tale Of Us|Adam Beyer|Charlotte de Witte|Amelie Lens|Nina Kraviz|Peggy Gou|Honey Dijon|Ben Klock|Marcel Dettmann|Len Faki|DJ Koze|Jeff Mills|Frankie Knuckles|Laurent Garnier|Moodymann|Theo Parrish|Kerri Chandler|Louie Vega|DJ Harvey|Ben UFO|Four Tet|Floating Points|Black Coffee|Adam Port|Michael Bibi|Paco Osuna|Héctor Oaks|Andrés Campo|Reinier Zonneveld|Sara Landry|I Hate Models|Kobosil|Paula Temple|Ellen Allien|Helena Hauff|KlangKuenstler|Fantasm|Claptone|Sam Paganini|Joseph Capriati|Stephan Bodzin|Maceo Plex|Anyma|Boris Brejcha|Damian Lazarus|Hernán Cattaneo|Patrick Topping|Raresh|Luciano|DJ Tennis|Deborah De Luca|Indira Paganotto|After=Afterparty|Closing party|Opening de Ibiza=Ibiza opening party|Set al amanecer=Sunrise set|B2B|Pinchar con vinilos=Playing vinyl|CDJ|Pegatina en la cámara del móvil=Sticker on your phone camera|Portero de Berghain=Berghain bouncer|Cola de Berghain=Berghain queue|Guestlist|Line-up secreto=Secret line-up|Tune ID|Drop|BPM|Roland 909|Acid house|Minimal|Tech house|Melodic techno|Hard techno|Rominimal|Afro house|Detroit techno|Chicago house|UK garage|Warehouse party|Free guestlist|Zona de fumadores=Smoking area|Guardarropa=Cloakroom|Abanico en la pista=Fan on the dancefloor|Bola de discoteca=Disco ball|Máquina de humo=Smoke machine|Tapones para los oídos=Earplugs|Boat party|Cerezas de Pacha=Pacha cherries|Shazam fallando en el club=Shazam failing in the club|Bailar pegado al bafle=Dancing right by the speaker|Pedir un tema al DJ=Asking the DJ for a song|About Blank|Club der Visionäre|Nowadays|Club Space Miami|Apollonia|Rhadoo|Sonja Moonear|Hunee|Motor City Drum Ensemble|DVS1|Chris Stussy|Dennis Cruz"}
+};
+const THEME_EN={famosos:["Famous people","Icons from around the world, from history to memes"],cine:["Movies","Films, iconic scenes and characters"],musica:["Music","Artists, anthems and legendary moments"],futbol:["Football","Stars, clubs and legendary moments"],videojuegos:["Video games","Sagas, characters and consoles"],xceed:["XCEED","Underground DJs, clubs, parties and festivals"]};
+for(const k in THEMES){const t=THEMES[k];t.pool=t.pool.split("|").map(w=>{const [es,en]=w.split("=");return [es,k,en||es]})}
+
+const L={
+es:{
+  tagline:"Tres rondas, el mismo mazo y cada vez menos palabras.",lang:"Idioma",look:"Apariencia",dark:"Modo oscuro",light:"Modo claro",themes:"Temas",pick:"(elige uno o varios)",cardsN:n=>`${n} cartas`,
+  adv:"Avanzado",nofilter:"Sin filtros",teams:"Equipos",addTeam:"+ Añadir equipo",removeTeam:"Quitar equipo",teamN:n=>`Equipo ${n}`,
+  cards:"Cartas",maxCards:n=>`máx. ${n}`,plusCustom:n=>`+ ${n} tuyas`,noSkipR1:"En la ronda 1 no se puede pasar carta.",lastCard:"Es la última carta: no se puede pasar.",secs:"Segundos por turno",fewer:"Menos",more:"Más",
+  custom:"Tus propias cartas",customHint:"(opcional, una por línea)",customPh:"La abuela Carmen\nTorre Eiffel\nPaella",deal:"Repartir cartas",
+  settings:"← Ajustes",nThemes:n=>`${n} temas`,reviewH:"Revisad el mazo",reviewP:"Cambiad las cartas que nadie conozca. Después se mezclan y no se vuelven a ver hasta jugar.",swap:"Cambiar",shuffleStart:"Mezclar y empezar",
+  roundOf:r=>`Ronda ${r} de 3`,round:r=>`Ronda ${r}`,canPass:"Puedes pasar una carta: vuelve al final del mazo.",noPass:"En esta ronda no se puede pasar carta.",sameCards:n=>`Se juega con las mismas ${n} cartas.`,go:"Vamos",
+  turnOf:"Turno de",tapReveal:"Toca para desvelar",clockStarts:s=>`El reloj arranca: ${s} s`,revealAria:"Desvelar carta y empezar el tiempo",leftRound:n=>`Quedan ${n} cartas en esta ronda`,
+  paused:"En pausa",moreDeck:(n,g)=>`${n} más en el mazo · ${g} acertadas`,pass:"Pasar",hit:"✓ Acertada",resume:"Reanudar",pause:"Pausar",
+  deckDone:"¡Mazo terminado!",timeUp:"¡Tiempo!",plusFor:(n,t)=>`+${n} para ${t}`,voidQ:"¿Alguna no valía? Tócala para anularla.",void:"Anular",restore:"Recuperar",none:"Ninguna carta esta vez.",
+  seeFinal:"Ver resultado final",closeRound:r=>`Cerrar ronda ${r}`,passPhone:t=>`Pasa el móvil a ${t}`,
+  endOfRound:r=>`Fin de la ronda ${r}`,next:"Siguiente",starts:t=>`Empieza ${t}.`,startRound:r=>`Empezar ronda ${r}`,
+  finalRes:"Resultado final",tie:"¡Empate!",wins:t=>`Gana ${t}`,newSetup:"Nuevos ajustes",rematch:"Revancha",
+  team:"Equipo",scoreboard:"Marcador",openMenu:"Abrir menú",menuEyebrow:r=>`Menú · Ronda ${r} de 3`,pausedGame:"Partida en pausa",backGame:"▶ Volver a la partida",scores:"Puntuaciones",changeTheme:"Cambiar de tema",endGame:"Finalizar partida",
+  liveScores:"Puntuaciones en curso",backMenu:"← Volver al menú",confirmEndH:"¿Finalizar la partida?",confirmEndP:"Se cierra ahora con las puntuaciones actuales y se muestra el ganador. No se puede deshacer.",cancel:"Cancelar",finish:"Finalizar",
+  confirmThemeH:"¿Cambiar de tema?",confirmThemeP:"La partida en curso se cancela y se pierden las puntuaciones. Los equipos se mantienen.",cancelGame:"Cancelar partida",yourCard:"Tu carta",
+  defTeams:["Equipo Rojo","Equipo Verde"],
+  R:{1:["Descripción libre","Habla todo lo que quieras, pero sin decir la palabra ni su raíz."],2:["Una sola palabra","Solo puedes decir una palabra. Tu equipo tiene un único intento."],3:["Mímica","Prohibido hablar. Solo gestos, sonidos y mímica."]}
+},
+en:{
+  tagline:"Three rounds, the same deck, fewer words every time.",lang:"Language",look:"Appearance",dark:"Dark mode",light:"Light mode",themes:"Themes",pick:"(pick one or more)",cardsN:n=>`${n} cards`,
+  adv:"Advanced",nofilter:"No filter",teams:"Teams",addTeam:"+ Add team",removeTeam:"Remove team",teamN:n=>`Team ${n}`,
+  cards:"Cards",maxCards:n=>`max ${n}`,plusCustom:n=>`+ ${n} of yours`,noSkipR1:"No skipping in round 1.",lastCard:"Last card: it can't be skipped.",secs:"Seconds per turn",fewer:"Fewer",more:"More",
+  custom:"Your own cards",customHint:"(optional, one per line)",customPh:"Grandma Carmen\nEiffel Tower\nPaella",deal:"Deal cards",
+  settings:"← Settings",nThemes:n=>`${n} themes`,reviewH:"Check the deck",reviewP:"Swap any card nobody knows. Then the deck is shuffled and stays hidden until you play.",swap:"Swap",shuffleStart:"Shuffle and start",
+  roundOf:r=>`Round ${r} of 3`,round:r=>`Round ${r}`,canPass:"You can skip a card: it goes to the bottom of the deck.",noPass:"No skipping cards this round.",sameCards:n=>`You play with the same ${n} cards.`,go:"Let's go",
+  turnOf:"Up next",tapReveal:"Tap to reveal",clockStarts:s=>`The clock starts: ${s} s`,revealAria:"Reveal the card and start the clock",leftRound:n=>`${n} cards left this round`,
+  paused:"Paused",moreDeck:(n,g)=>`${n} more in the deck · ${g} guessed`,pass:"Skip",hit:"✓ Got it",resume:"Resume",pause:"Pause",
+  deckDone:"Deck finished!",timeUp:"Time's up!",plusFor:(n,t)=>`+${n} for ${t}`,voidQ:"One didn't count? Tap it to cancel it.",void:"Cancel",restore:"Restore",none:"No cards this time.",
+  seeFinal:"See final result",closeRound:r=>`End round ${r}`,passPhone:t=>`Pass the phone to ${t}`,
+  endOfRound:r=>`End of round ${r}`,next:"Next",starts:t=>`${t} starts.`,startRound:r=>`Start round ${r}`,
+  finalRes:"Final result",tie:"It's a tie!",wins:t=>`${t} wins`,newSetup:"New settings",rematch:"Rematch",
+  team:"Team",scoreboard:"Scoreboard",openMenu:"Open menu",menuEyebrow:r=>`Menu · Round ${r} of 3`,pausedGame:"Game paused",backGame:"▶ Back to the game",scores:"Scores",changeTheme:"Change theme",endGame:"End game",
+  liveScores:"Current scores",backMenu:"← Back to menu",confirmEndH:"End the game?",confirmEndP:"The game ends now with the current scores and shows the winner. This can't be undone.",cancel:"Cancel",finish:"End game",
+  confirmThemeH:"Change theme?",confirmThemeP:"The current game is cancelled and the scores are lost. Teams are kept.",cancelGame:"Cancel game",yourCard:"Your card",
+  defTeams:["Red Team","Green Team"],
+  R:{1:["Free description","Say anything you like, except the word itself or its root."],2:["One word only","You can say just one word. Your team gets one guess."],3:["Charades","No talking. Only gestures, sounds and miming."]}
+}};
+const ROUNDS={1:{pass:false},2:{pass:true},3:{pass:true}};
+const T=()=>L[S.lang]||L.es;
+const rName=r=>T().R[r][0], rRule=r=>T().R[r][1];
+const themeName=k=>S.lang==="en"?THEME_EN[k][0]:THEMES[k].name;
+const themeTag=k=>S.lang==="en"?THEME_EN[k][1]:THEMES[k].tag;
+const cardWord=c=>S.lang==="en"&&c[1]!=="custom"?(c[2]||c[0]):c[0];
+const cardCat=c=>c[1]==="custom"?T().yourCard:THEMES[c[1]]?themeName(c[1]):c[1];
+
+let S=null;
+function fresh(){return{screen:"setup",lang:"es",theme:"dark",modes:["famosos","cine","musica","futbol","videojuegos","xceed"],teams:[{name:"Equipo Rojo",color:COLORS[0]},{name:"Equipo Verde",color:COLORS[1]}],numCards:36,turnSecs:60,custom:"",deck:[],spare:[],round:1,remaining:[],current:null,teamIdx:0,scores:[],turnGuessed:[],timeLeft:60,paused:false}}
+function setLang(l){
+  if(S.lang===l)return;
+  const from=L[S.lang||"es"],to=L[l];
+  S.teams.forEach((t,i)=>{
+    const fi=from.defTeams.indexOf(t.name);if(fi>=0){t.name=to.defTeams[fi];return}
+    const m=t.name.match(/^(Equipo|Team) (\d+)$/);if(m)t.name=to.teamN(m[2]);
+  });
+  S.lang=l;
+}
+
+function save(){try{localStorage.setItem("nightgame-state",JSON.stringify(S))}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem("nightgame-state"));return d&&d.screen?d:null}catch(e){return null}}
+
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const app=document.getElementById("app");
+
+/* ---------- Sonido ---------- */
+let AC=null;
+function audio(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume()}catch(e){}}
+function beep(f=880,d=.12,v=.2){if(!AC)return;try{const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;o.type="square";g.gain.value=v;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);o.stop(AC.currentTime+d)}catch(e){}}
+let wake=null;
+async function keepAwake(){try{if(navigator.wakeLock&&!wake){wake=await navigator.wakeLock.request("screen");wake.addEventListener("release",()=>wake=null)}}catch(e){}}
+
+/* ---------- Temporizador ---------- */
+let raf=null,endsAt=0,lastWhole=null;
+function startTimer(){endsAt=performance.now()+S.timeLeft*1000;S.paused=false;lastWhole=null;loop();keepAwake()}
+function stopTimer(){cancelAnimationFrame(raf);raf=null}
+function loop(){
+  const left=Math.max(0,(endsAt-performance.now())/1000);S.timeLeft=left;
+  paintTimer();
+  const whole=Math.ceil(left);
+  if(whole!==lastWhole){if(whole<=5&&whole>0)beep(660,.08,.15);lastWhole=whole}
+  if(left<=0){stopTimer();timeUp();return}
+  raf=requestAnimationFrame(loop);
+}
+function paintTimer(){
+  const el=document.getElementById("timer");if(!el)return;
+  const C=2*Math.PI*52,frac=S.timeLeft/S.turnSecs;
+  el.querySelector(".arc").style.strokeDashoffset=C*(1-frac);
+  el.querySelector(".num").textContent=Math.ceil(S.timeLeft);
+  el.classList.toggle("hot",S.timeLeft<=5);
+}
+
+/* ---------- Lógica de juego ---------- */
+function customCards(){return (S.custom||"").split(/\n|,/).map(s=>s.trim()).filter(Boolean)}
+function avail(){return S.modes.length*200}
+function clampCards(n){return Math.min(avail(),Math.max(10,n|0))}
+function canSwap(c){return c[1]!=="custom"&&S.spare.some(x=>x[1]===c[1])}
+function buildDeck(){
+  const custom=[...new Set(customCards())].map(t=>[t,"custom",t]);
+  const pools=shuffle(S.modes).map(m=>shuffle(THEMES[m].pool));const pool=[];
+  for(let i=0;pools.some(p=>i<p.length);i++)pools.forEach(p=>{if(i<p.length)pool.push(p[i])});
+  const need=S.numCards;
+  S.deck=[...custom,...pool.slice(0,need)];
+  S.spare=pool.slice(need);
+}
+function startGame(){S.scores=S.teams.map(()=>[0,0,0]);S.round=1;S.teamIdx=0;S.remaining=shuffle(S.deck);S.screen="roundIntro"}
+function drawCard(){S.current=S.remaining.shift()||null}
+function reveal(){audio();S.timeLeft=S.turnSecs;S.turnGuessed=[];drawCard();S.screen="playing";render();startTimer()}
+function hit(){
+  if(!S.current)return;
+  beep(1046,.07,.12);
+  S.scores[S.teamIdx][S.round-1]++;S.turnGuessed.push({card:S.current,ok:true});
+  if(S.remaining.length===0){S.current=null;stopTimer();endTurn(true);return}
+  drawCard();render();
+}
+function pass(){if(!ROUNDS[S.round].pass||!S.current||S.remaining.length===0)return;S.remaining.push(S.current);drawCard();render()}
+function timeUp(){beep(330,.5,.25);if(S.current){S.remaining.push(S.current);S.current=null}S.remaining=shuffle(S.remaining);endTurn(false)}
+function endTurn(deckEmpty){S.screen="turnEnd";S.deckEmpty=deckEmpty;save();render()}
+function toggleGuess(i){
+  const g=S.turnGuessed[i];g.ok=!g.ok;
+  S.scores[S.teamIdx][S.round-1]+=g.ok?1:-1;
+  if(g.ok){S.remaining=S.remaining.filter(c=>c[0]!==g.card[0])}else{S.remaining.push(g.card)}
+  S.deckEmpty=S.remaining.length===0;render();save();
+}
+function nextTurn(){
+  S.teamIdx=(S.teamIdx+1)%S.teams.length;
+  S.screen=S.deckEmpty?(S.round===3?"gameEnd":"roundEnd"):"turnReady";
+  save();render();
+}
+function nextRound(){S.round++;S.remaining=shuffle(S.deck);S.screen="roundIntro";save();render()}
+function openMenu(m){if(S.screen==="playing"&&!S.paused){stopTimer();S.paused=true;S.menuPaused=true}S.menu=m;save();render()}
+function closeMenu(){S.menu=null;if(S.screen==="playing"&&S.menuPaused){S.menuPaused=false;startTimer()}save();render()}
+function togglePause(){if(S.paused){startTimer();render()}else{stopTimer();S.paused=true;render()}}
+
+/* ---------- Vistas ---------- */
+const totals=()=>S.teams.map((t,i)=>S.scores[i]?S.scores[i].reduce((a,b)=>a+b,0):0);
+const ICON={dark:'<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>',light:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'};
+function prefs(){const t=T();return `<div class="prefs"><div class="seg" role="group" aria-label="${t.lang}">${["es","en"].map(l=>`<button data-a="lang" data-l="${l}" class="${S.lang===l?"on":""}" aria-pressed="${S.lang===l}">${l.toUpperCase()}</button>`).join("")}</div><div class="seg" role="group" aria-label="${t.look}">${["dark","light"].map(m=>`<button data-a="theme" data-m="${m}" class="${S.theme===m?"on":""}" aria-pressed="${S.theme===m}" aria-label="${m==="dark"?t.dark:t.light}" title="${m==="dark"?t.dark:t.light}">${ICON[m]}</button>`).join("")}</div></div>`}
+function board(){
+  const tot=totals();
+  return `<div class="top"><div class="board" aria-label="${T().scoreboard}">${S.teams.map((t,i)=>`<div class="chip ${i===S.teamIdx?"on":""}"><span class="dot" style="background:${t.color}"></span>${esc(t.name)}<b>${tot[i]}</b></div>`).join("")}</div>${menuBtn()}</div>`;
+}
+function menuBtn(){return `<button class="menu-btn" data-a="menu" aria-label="${T().openMenu}"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>`}
+function menuHTML(){
+  if(!S.menu)return"";const t=T();let inner="";
+  if(S.menu==="main")inner=`<div class="toprow"><div class="eyebrow">${t.menuEyebrow(S.round)}</div>${prefs()}</div><h2>${t.pausedGame}</h2>
+    <button class="btn btn-main" data-a="resume">${t.backGame}</button>
+    <button class="btn btn-ghost" data-a="mScores">${t.scores}</button>
+    <button class="btn btn-ghost" data-a="mTheme">${t.changeTheme}</button>
+    <button class="btn btn-ghost" data-a="mEnd" style="color:var(--bad)">${t.endGame}</button>`;
+  else if(S.menu==="scores")inner=`<div class="eyebrow">${t.liveScores}</div><h2>${t.round(S.round)} · ${rName(S.round)}</h2>${table()}<button class="btn btn-ghost center" data-a="menu">${t.backMenu}</button>`;
+  else if(S.menu==="confirmEnd")inner=`<h2>${t.confirmEndH}</h2><p>${t.confirmEndP}</p><div class="row"><button class="btn btn-ghost center" data-a="menu">${t.cancel}</button><button class="btn btn-danger center" data-a="doEnd">${t.finish}</button></div>`;
+  else if(S.menu==="confirmTheme")inner=`<h2>${t.confirmThemeH}</h2><p>${t.confirmThemeP}</p><div class="row"><button class="btn btn-ghost center" data-a="menu">${t.cancel}</button><button class="btn btn-danger center" data-a="doTheme">${t.cancelGame}</button></div>`;
+  return `<div class="veil" data-a="veil"><div class="sheet" role="dialog" aria-modal="true">${inner}</div></div>`;
+}
+function roundbar(){return `<div class="roundbar"><div class="eyebrow">${T().round(S.round)} · ${rName(S.round)}</div><div class="pips">${[1,2,3].map(r=>`<span class="pip ${r<S.round?"done":r===S.round?"now":""}"></span>`).join("")}</div></div>`}
+function timerHTML(){const C=2*Math.PI*52;return `<div class="timer" id="timer" role="timer" aria-live="off"><svg viewBox="0 0 118 118"><circle class="trk" cx="59" cy="59" r="52"/><circle class="arc" cx="59" cy="59" r="52" stroke-dasharray="${C}" stroke-dashoffset="0"/></svg><div class="num">${Math.ceil(S.timeLeft)}</div></div>`}
+
+const V={
+setup(){const t=T();
+  return `<div class="scroll">
+    <div class="toprow" style="padding-top:6px;align-items:flex-start"><div class="logo">The Night<br><span>Game</span></div>${prefs()}</div>
+    <p class="small">${t.tagline}</p>
+    <div class="field"><div class="toprow"><label>${t.themes} <span class="small">${t.pick}</span></label><span class="small">${t.cardsN(S.modes.length*200)}</span></div>
+      <div class="modes">${Object.keys(THEMES).map(k=>`<button class="mode ${S.modes.includes(k)?"on":""}" data-a="mode" data-m="${k}" aria-pressed="${S.modes.includes(k)}"><span class="check" aria-hidden="true">${S.modes.includes(k)?"✓":""}</span><span class="mname">${themeName(k)}</span><span class="mtag">${themeTag(k)}</span><span class="lvl">${t.cardsN(THEMES[k].pool.length)}</span></button>`).join("")}</div>
+    </div>
+    <div class="field"><label>${t.teams}</label>
+      ${S.teams.map((tm,i)=>`<div class="team-row"><span class="dot" style="background:${tm.color}"></span><input id="team-${i}" data-team="${i}" value="${esc(tm.name)}" maxlength="18" aria-label="${t.team} ${i+1}">${S.teams.length>2?`<button class="icon-btn" data-a="delTeam" data-i="${i}" aria-label="${t.removeTeam}">×</button>`:""}</div>`).join("")}
+      ${S.teams.length<6?`<button class="btn btn-ghost" data-a="addTeam" style="min-height:46px">${t.addTeam}</button>`:""}
+    </div>
+    <div class="field"><div class="toprow"><label for="numCards">${t.cards}</label><span class="small">${customCards().length?t.plusCustom(customCards().length)+" · ":""}${t.maxCards(avail())}</span></div>
+      <div class="slide-row"><button class="icon-btn" data-a="cards" data-d="-1" aria-label="${t.fewer}">−</button><input type="range" id="numCards" min="10" max="${avail()}" step="1" value="${S.numCards}"><button class="icon-btn" data-a="cards" data-d="1" aria-label="${t.more}">+</button><output id="numOut">${S.numCards}</output></div>
+    </div>
+    <div class="row" style="flex-wrap:wrap">
+      <div class="field"><label>${t.secs}</label><div class="stepper"><button class="icon-btn" data-a="secs" data-d="-5" aria-label="${t.fewer}">−</button><output>${S.turnSecs}</output><button class="icon-btn" data-a="secs" data-d="5" aria-label="${t.more}">+</button></div></div>
+    </div>
+    <div class="field"><label for="custom">${t.custom} <span class="small">${t.customHint}</span></label>
+      <textarea id="custom" placeholder="${esc(t.customPh)}">${esc(S.custom)}</textarea></div>
+  </div>
+  <button class="btn btn-main" data-a="toReview">${t.deal}</button>`;
+},
+review(){const t=T();
+  return `<div class="toprow"><button class="link" data-a="back">${t.settings}</button><span class="small">${S.modes.length>1?t.nThemes(S.modes.length):themeName(S.modes[0])} · ${t.cardsN(S.deck.length)}</span></div>
+  <div><h2 style="font-size:28px">${t.reviewH}</h2><p class="small" style="margin-top:6px">${t.reviewP}</p></div>
+  <div class="scroll"><div class="review-list">${S.deck.map((c,i)=>`<div class="review-item"><div class="t">${esc(cardWord(c))}<div class="c">${esc(cardCat(c))}</div></div><button data-a="swap" data-i="${i}" ${canSwap(c)?"":"disabled"}>${t.swap}</button></div>`).join("")}</div></div>
+  <button class="btn btn-main" data-a="start">${t.shuffleStart}</button>`;
+},
+roundIntro(){const t=T(),r=ROUNDS[S.round];
+  return `${board()}<div class="stage" style="align-items:stretch">
+    <div class="eyebrow">${t.roundOf(S.round)}</div>
+    <div class="big">${rName(S.round)}</div>
+    <p style="font-size:19px">${rRule(S.round)}</p>
+    <p class="small">${r.pass?t.canPass:t.noPass} ${S.round>1?t.sameCards(S.deck.length):""}</p>
+  </div>
+  <button class="btn btn-main" data-a="toReady">${t.go}</button>`;
+},
+turnReady(){const t=T(),tm=S.teams[S.teamIdx];
+  return `${board()}${roundbar()}
+  <div class="stage">
+    <div class="rule"><div class="eyebrow">${t.turnOf}</div><h3><span class="dot" style="background:${tm.color};width:18px;height:18px"></span>${esc(tm.name)}</h3><p class="small">${rRule(S.round)}</p></div>
+    <button class="card back" data-a="reveal" aria-label="${t.revealAria}"><div class="word">${t.tapReveal}</div><div class="cat" style="opacity:.8">${t.clockStarts(S.turnSecs)}</div></button>
+    <div class="left">${t.leftRound(S.remaining.length)}</div>
+  </div>`;
+},
+playing(){const t=T(),c=S.current,r=ROUNDS[S.round],w=c?cardWord(c):"";
+  return `${board()}${roundbar()}
+  <div class="stage">
+    ${timerHTML()}
+    <div class="card pop" aria-live="polite"><div class="cat">${c?esc(cardCat(c)):""}</div><div class="word ${w.length>34?"xlong":w.length>18?"long":""}">${esc(w)}</div>${S.paused?`<div class="pause-veil">${t.paused}</div>`:""}</div>
+    <div class="left">${t.moreDeck(S.remaining.length,S.turnGuessed.length)}</div>
+  </div>
+  <div class="row">
+    <button class="btn btn-bad" data-a="pass" ${(!r.pass||S.remaining.length===0||S.paused)?"disabled":""}>${t.pass}</button>
+    <button class="btn btn-good" data-a="hit" style="flex:1.6" ${S.paused?"disabled":""}>${t.hit}</button>
+  </div>
+  ${!r.pass?`<p class="small" style="text-align:center">${t.noSkipR1}</p>`:S.remaining.length===0?`<p class="small" style="text-align:center">${t.lastCard}</p>`:""}
+  <button class="link" data-a="pause" style="align-self:center">${S.paused?t.resume:t.pause}</button>`;
+},
+turnEnd(){const t=T(),tm=S.teams[S.teamIdx],n=S.turnGuessed.filter(g=>g.ok).length,nxt=S.teams[(S.teamIdx+1)%S.teams.length];
+  return `${board()}${roundbar()}
+  <div><div class="eyebrow">${S.deckEmpty?t.deckDone:t.timeUp}</div><div class="big">${t.plusFor(n,esc(tm.name))}</div></div>
+  <div class="scroll">${S.turnGuessed.length?`<p class="small">${t.voidQ}</p><div class="list">${S.turnGuessed.map((g,i)=>`<div class="li ${g.ok?"":"off"}"><span class="t">${esc(cardWord(g.card))}</span><button data-a="toggle" data-i="${i}">${g.ok?t.void:t.restore}</button></div>`).join("")}</div>`:`<p class="small">${t.none}</p>`}</div>
+  <button class="btn btn-main" data-a="next">${S.deckEmpty?(S.round===3?t.seeFinal:t.closeRound(S.round)):t.passPhone(esc(nxt.name))}</button>`;
+},
+roundEnd(){const t=T();
+  return `<div class="toprow"><div class="eyebrow">${t.endOfRound(S.round)}</div>${menuBtn()}</div><div><div class="big">${rName(S.round)}</div></div>
+  <div class="scroll">${table()}<p class="small">${t.next}: <b>${rName(S.round+1)}</b>. ${rRule(S.round+1)} ${t.starts(esc(S.teams[S.teamIdx].name))}</p></div>
+  <button class="btn btn-main" data-a="nextRound">${t.startRound(S.round+1)}</button>`;
+},
+gameEnd(){const t=T(),tot=totals(),max=Math.max(...tot),win=S.teams.filter((x,i)=>tot[i]===max);
+  return `<div style="padding-top:10px"><div class="eyebrow">${t.finalRes}</div><div class="big">${win.length>1?t.tie:t.wins(esc(win[0].name))}</div></div>
+  <div class="scroll">${table()}</div>
+  <div class="row"><button class="btn btn-ghost" data-a="newSetup">${t.newSetup}</button><button class="btn btn-main" data-a="rematch">${t.rematch}</button></div>`;
+}
+};
+function table(){
+  const tot=totals(),max=Math.max(...tot),order=S.teams.map((x,i)=>i).sort((a,b)=>tot[b]-tot[a]);
+  return `<div style="overflow-x:auto"><table><thead><tr><th>${T().team}</th><th>R1</th><th>R2</th><th>R3</th><th>Total</th></tr></thead><tbody>${order.map(i=>`<tr class="${tot[i]===max&&max>0?"win":""}"><td><span class="dot" style="background:${S.teams[i].color};display:inline-block;margin-right:8px;vertical-align:middle"></span>${esc(S.teams[i].name)}</td>${S.scores[i].map((v,r)=>`<td>${r<S.round?v:"–"}</td>`).join("")}<td class="tot">${tot[i]}</td></tr>`).join("")}</tbody></table></div>`;
+}
+
+let lastView="";
+function render(){
+  const root=document.documentElement;root.lang=S.lang;root.classList.toggle("th-light",S.theme==="light");
+  const view=S.screen+"|"+(S.menu||"");
+  const sc=app.querySelector(".scroll"),sh=app.querySelector(".sheet");
+  const keep=view===lastView,top=keep&&sc?sc.scrollTop:0,stop=keep&&sh?sh.scrollTop:0;
+  const ae=document.activeElement,focusId=keep&&ae&&ae.id?ae.id:null;
+  app.innerHTML=V[S.screen]()+menuHTML();
+  const sc2=app.querySelector(".scroll");if(sc2)sc2.scrollTop=top;
+  const sh2=app.querySelector(".sheet");if(sh2)sh2.scrollTop=stop;
+  if(focusId){const f=document.getElementById(focusId);if(f)f.focus({preventScroll:true})}
+  lastView=view;
+  if(S.screen==="playing")paintTimer();
+}
+
+/* ---------- Eventos ---------- */
+app.addEventListener("input",e=>{
+  if(e.target.dataset.team!==undefined){S.teams[+e.target.dataset.team].name=e.target.value;save()}
+  if(e.target.id==="custom"){S.custom=e.target.value;save()}
+  if(e.target.id==="numCards"){S.numCards=clampCards(+e.target.value);const o=document.getElementById("numOut");if(o)o.textContent=S.numCards;save()}
+});
+app.addEventListener("click",e=>{
+  const b=e.target.closest("[data-a]");if(!b)return;audio();
+  const a=b.dataset.a,i=+b.dataset.i;
+  switch(a){
+    case"lang":setLang(b.dataset.l);break;
+    case"theme":S.theme=b.dataset.m;break;
+    case"addTeam":S.teams.push({name:T().teamN(S.teams.length+1),color:COLORS.find(c=>!S.teams.some(t=>t.color===c))||COLORS[0]});break;
+    case"delTeam":S.teams.splice(i,1);break;
+    case"cards":S.numCards=clampCards(S.numCards+ +b.dataset.d);break;
+    case"secs":S.turnSecs=Math.min(120,Math.max(15,S.turnSecs+ +b.dataset.d));break;
+    case"toReview":S.numCards=clampCards(S.numCards);S.teams.forEach((t,k)=>{if(!t.name.trim())t.name=T().teamN(k+1)});buildDeck();S.screen="review";break;
+    case"mode":{const m=b.dataset.m,on=S.modes.includes(m);if(on&&S.modes.length===1)break;S.modes=on?S.modes.filter(x=>x!==m):[...S.modes,m];S.numCards=clampCards(S.numCards);}break;
+    case"menu":openMenu("main");return;
+    case"veil":if(e.target===b){closeMenu()}return;
+    case"resume":closeMenu();return;
+    case"mScores":S.menu="scores";render();return;
+    case"mEnd":S.menu="confirmEnd";render();return;
+    case"mTheme":S.menu="confirmTheme";render();return;
+    case"doEnd":stopTimer();if(S.current){S.remaining.push(S.current);S.current=null}S.menu=null;S.paused=false;S.screen="gameEnd";break;
+    case"doTheme":stopTimer();S.current=null;S.menu=null;S.paused=false;S.scores=[];S.round=1;S.screen="setup";break;
+    case"back":S.screen="setup";break;
+    case"swap":{const c=S.deck[i],j=S.spare.findIndex(x=>x[1]===c[1]);if(j>=0){const n=S.spare.splice(j,1)[0];S.spare.push(c);S.deck[i]=n}}break;
+    case"start":startGame();break;
+    case"toReady":S.screen="turnReady";break;
+    case"reveal":reveal();return;
+    case"hit":hit();return;
+    case"pass":pass();return;
+    case"pause":togglePause();return;
+    case"toggle":toggleGuess(i);return;
+    case"next":nextTurn();return;
+    case"nextRound":nextRound();return;
+    case"rematch":buildDeck();S.screen="review";break;
+    case"newSetup":S.screen="setup";break;
+  }
+  save();render();
+});
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&S.screen==="playing"&&!S.paused){stopTimer();S.paused=true;save();render()}});
+
+/* ---------- Arranque ---------- */
+function validCard(c){return Array.isArray(c)&&(c[1]==="custom"||THEMES[c[1]])}
+function start(data){
+  S=(data&&data.screen)?data:(load()||fresh());
+  if(!S.lang)S.lang="es";if(!S.theme)S.theme="dark";
+  const okModes=Array.isArray(S.modes)&&S.modes.length&&S.modes.every(m=>THEMES[m]);
+  const okDeck=(S.deck||[]).every(validCard);
+  if(!okModes||!okDeck){const keep={teams:S.teams,lang:S.lang,custom:S.custom||""};S=Object.assign(fresh(),keep);}
+  if(S.screen==="playing"){S.paused=true}
+  S.menuPaused=false;
+  render();
+}
+window.claude?.hot?.snapshot?.(()=>{const c={...S};if(c.screen==="playing")c.paused=true;return c});
+window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+</script>
+
+</body>
+</html>
