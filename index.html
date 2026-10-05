@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<meta name="description" content="The Night Game: Encore (equipos, tres rondas) y Fake ID (encuentra al impostor) para jugar con un solo móvil.">
+<meta name="description" content="The Night Game: Encore, Fake ID, Drop y Spotlight. Juegos de fiesta para jugar con un solo móvil.">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>The Night Game</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -325,6 +325,137 @@ tr.win td{color:var(--accent)}
 .tally-row .lead{border-color:var(--accent)}
 .tally-row .vs{font-weight:800;color:var(--ink-soft)}
 .seg.wide button{min-width:0;padding:0 12px}
+/* Drop */
+.hearts{color:var(--accent);letter-spacing:2px;font-size:15px;white-space:nowrap}
+.hearts i{font-style:normal;color:var(--line)}
+.dr-lives{display:flex;flex-direction:column}
+.dr-lives>div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-weight:700}
+.dr-lives>div span{min-width:0;overflow-wrap:anywhere}
+.dr-lives>div.out{opacity:.4;text-decoration:line-through}
+.dr-lives>div.hit{color:var(--accent)}
+.dr-hold{text-align:center;display:flex;flex-direction:column;gap:6px}
+.dr-holder{font-weight:800;font-size:clamp(36px,11vw,52px);letter-spacing:-.04em;line-height:1}
+.dr-holder.swap{animation:drSwap .3s cubic-bezier(.2,1.4,.4,1)}
+@keyframes drSwap{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+.dr-card.beat{animation:drBeat var(--bpm,600ms) ease-out}
+@keyframes drBeat{0%{transform:scale(1.045);box-shadow:0 0 0 0 rgba(255,74,43,.55)}100%{transform:scale(1);box-shadow:0 0 0 28px rgba(255,74,43,0)}}
+.dr-pass{min-height:76px;font-size:18px}
+.dr-ex{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:var(--r);background:var(--surface)}
+.dr-ex p{font-weight:700;font-size:16px}
+#fx.shake{animation:fxShake .5s ease}
+@keyframes fxShake{15%{transform:translate(-10px,6px)}30%{transform:translate(9px,-7px)}45%{transform:translate(-7px,4px)}60%{transform:translate(5px,-3px)}75%{transform:translate(-3px,2px)}}
+.boom{position:absolute;inset:0;display:grid;place-items:center;background:var(--accent);animation:boomBg 1.2s ease forwards}
+@keyframes boomBg{0%{background:#fff}12%{background:var(--accent)}100%{background:#000}}
+.boom .ring{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:6px solid #fff;opacity:0;animation:boomRing 1s ease-out forwards}
+.boom .r2{animation-delay:.12s;border-color:var(--accent)}.boom .r3{animation-delay:.24s}
+@keyframes boomRing{from{opacity:1;transform:scale(.2)}to{opacity:0;transform:scale(14)}}
+.boom-word{position:relative;font-weight:800;font-size:clamp(84px,30vw,150px);letter-spacing:-.06em;color:#fff;animation:winSlam .5s cubic-bezier(.2,1.35,.4,1) both}
+.boom-sub{position:absolute;left:0;right:0;top:calc(50% + clamp(56px,17vw,90px));text-align:center;font-weight:800;font-size:22px;color:#fff;opacity:0;animation:winUp .4s ease forwards .4s}
+/* Spotlight */
+.sp-q{display:flex;flex-direction:column;gap:12px;padding:22px 20px;border-radius:10px;background:var(--surface);border:1.5px solid var(--line)}
+.sp-text{font-weight:800;font-size:clamp(28px,8.5vw,40px);line-height:1.05;letter-spacing:-.03em;text-wrap:balance}
+.sp-mini .eyebrow{padding-bottom:4px}
+.cd{position:absolute;inset:0;display:grid;place-items:center}
+.cd-num{font-weight:800;font-size:clamp(120px,40vw,200px);letter-spacing:-.06em;color:var(--ink);animation:cdPop .8s ease both}
+.cd-num.go{color:var(--accent);font-size:clamp(56px,18vw,96px)}
+@keyframes cdPop{0%{transform:scale(1.8);opacity:0}25%{transform:scale(1);opacity:1}100%{opacity:1}}
+.sp-rev .sp-grid{position:absolute;inset:12% 8% 32%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-content:center}
+.sp-rev .sp-grid.many{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.sp-rev .sp-grid div{display:grid;place-items:center;min-height:48px;padding:8px;border-radius:8px;background:#161616;color:#777;font-weight:800;font-size:16px;text-align:center;overflow-wrap:anywhere;transition:background .3s,color .3s}
+.sp-rev .sp-grid.many div{font-size:13px;min-height:40px}
+.sp-rev .sp-grid div.hit{background:#ff4a2b;color:#fff;box-shadow:0 0 40px rgba(255,74,43,.6)}
+.sp-verdict{position:absolute;left:0;right:0;bottom:16%;text-align:center;display:flex;flex-direction:column;gap:8px;padding-inline:20px;opacity:0;transition:opacity .4s}
+.sp-rev.done .sp-verdict{opacity:1}
+.sp-names{font-weight:800;font-size:clamp(32px,10vw,48px);letter-spacing:-.04em;color:#fff;line-height:1}
+.sp-verdict .eyebrow{color:#ff4a2b}
+.games .game:nth-child(n+3) .gname{font-size:clamp(30px,9vw,40px)}
+/* Entrada Drop */
+.dri,.woof,.spi,.star-w{position:absolute;inset:0;background:#000;color:#fff;overflow:hidden}
+.dri-eq{position:absolute;left:6%;right:6%;bottom:30%;height:34%;display:flex;align-items:flex-end;gap:2.5%;transform-origin:bottom;transform:scaleY(.08);transition:opacity .15s}
+.dri-eq i{flex:1;height:var(--h);background:#fff;border-radius:2px;animation:eqB .32s ease-in-out infinite alternate var(--d)}
+.dri-eq i:nth-child(4n){background:#ff4a2b}
+@keyframes eqB{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+.dri.rise .dri-eq{transition:transform 1.5s cubic-bezier(.6,0,.9,.6);transform:scaleY(1)}
+.dri-meter{position:absolute;left:12%;right:12%;bottom:22%;height:4px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden}
+.dri-meter i{position:absolute;inset:0;background:#ff4a2b;transform-origin:left;transform:scaleX(0)}
+.dri.rise .dri-meter i{transition:transform 1.5s cubic-bezier(.6,0,.9,.6);transform:scaleX(1)}
+.dri-label{position:absolute;left:0;right:0;bottom:17%;text-align:center;font-size:11px;font-weight:800;letter-spacing:.3em;color:#9b9b9b}
+.dri.silence .dri-eq,.dri.silence .dri-meter,.dri.silence .dri-label{opacity:0}
+.dri-logo{position:absolute;inset:0;display:grid;place-items:center;font-weight:800;font-size:clamp(84px,28vw,140px);letter-spacing:-.06em;opacity:0;transform:scale(2.6)}
+.dri-logo span{color:#ff4a2b}
+.dri.dropped .dri-logo{opacity:1;transform:none;transition:transform .45s cubic-bezier(.2,1.35,.4,1),opacity .1s}
+.dri.dropped .dri-eq{opacity:1;bottom:0;height:100%;transform:scaleY(1);opacity:.18;transition:none}
+.dri.calm .dri-eq{opacity:.12}
+.dri-tag{position:absolute;left:0;right:0;top:calc(50% + clamp(50px,15vw,80px));text-align:center;font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9b9b9b;opacity:0}
+.dri.dropped .dri-tag{opacity:1;transition:opacity .4s .3s}
+.dri .fx-tap{opacity:0}.dri.dropped .fx-tap{opacity:1;transition:opacity .4s .6s}
+/* Explosión Drop */
+.woof{display:grid;place-items:center}
+.woof-flash{position:absolute;inset:0;background:#fff;opacity:0}
+.woof.blown .woof-flash{animation:wFlash .9s steps(1)}
+@keyframes wFlash{0%{opacity:1}10%{opacity:0}20%{opacity:.6;background:#ff4a2b}32%{opacity:0}44%{opacity:.35}56%{opacity:0}}
+.spk{position:absolute;width:min(62vw,280px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center}
+.spk i{position:absolute;border-radius:50%}
+.spk .s1{inset:0;background:radial-gradient(circle,#2a2a2a 0 60%,#111 61% 100%);box-shadow:0 0 0 6px #1a1a1a,inset 0 0 30px #000}
+.spk .s2{inset:16%;background:radial-gradient(circle,#3a3a3a,#141414 70%);border:3px solid #050505}
+.spk .s3{inset:34%;background:repeating-radial-gradient(circle,#222 0 4px,#2c2c2c 4px 8px)}
+.spk .s4{inset:42%;background:radial-gradient(circle at 40% 35%,#666,#111)}
+.woof.thump .spk{animation:thump .17s ease-out}
+@keyframes thump{0%{transform:scale(1)}40%{transform:scale(1.13)}100%{transform:scale(1)}}
+.woof.blown .spk{animation:blow .5s ease-in forwards}
+@keyframes blow{to{transform:scale(5);opacity:0}}
+.woof-wave{position:absolute;left:0;right:0;top:50%;height:70%;transform:translateY(-50%) scaleY(0);display:flex;align-items:center;gap:1.2%;padding-inline:2%}
+.woof-wave i{flex:1;height:var(--h);background:#ff4a2b;border-radius:3px}
+.woof-wave i:nth-child(3n){background:#fff}
+.woof.blown .woof-wave{animation:wave 1.4s cubic-bezier(.2,.9,.3,1) forwards .05s}
+@keyframes wave{0%{transform:translateY(-50%) scaleY(0)}18%{transform:translateY(-50%) scaleY(1.15)}100%{transform:translateY(-50%) scaleY(.12);opacity:.35}}
+.woof-word{position:relative;font-weight:800;font-size:clamp(84px,30vw,150px);letter-spacing:-.06em;opacity:0;line-height:1}
+.woof-word::before,.woof-word::after{content:attr(data-t);position:absolute;inset:0;mix-blend-mode:screen}
+.woof-word::before{color:#ff004c;transform:translate(-6px,2px)}
+.woof-word::after{color:#00e5ff;transform:translate(6px,-2px)}
+.woof.blown .woof-word{animation:wWord .55s cubic-bezier(.2,1.35,.4,1) forwards .1s}
+.woof.blown .woof-word::before,.woof.blown .woof-word::after{animation:wSplit .6s ease-out forwards .15s}
+@keyframes wWord{from{opacity:0;transform:scale(2.6)}to{opacity:1;transform:none}}
+@keyframes wSplit{to{transform:none;opacity:0}}
+.woof-sub{position:absolute;z-index:3;left:0;right:0;top:calc(50% + clamp(52px,17vw,88px));text-align:center;font-weight:800;font-size:24px;opacity:0;text-shadow:0 2px 12px #000,0 0 4px #000}
+.woof-word{z-index:3}
+.woof.blown .woof-sub{animation:winUp .4s ease forwards .5s}
+/* Entrada Spotlight */
+.beam{position:absolute;top:-6%;width:46%;height:120%;transform-origin:50% 0;background:linear-gradient(to bottom,rgba(255,255,255,.55),rgba(255,255,255,.06) 75%,transparent);clip-path:polygon(46% 0,54% 0,100% 100%,0 100%);mix-blend-mode:screen;filter:blur(1px)}
+.b1{left:-8%;animation:bm1 2.1s ease-in-out forwards}
+.b2{left:27%;animation:bm2 2.1s ease-in-out forwards;background:linear-gradient(to bottom,rgba(255,74,43,.6),rgba(255,74,43,.08) 75%,transparent)}
+.b3{right:-8%;animation:bm3 2.1s ease-in-out forwards}
+@keyframes bm1{0%{transform:rotate(-38deg)}35%{transform:rotate(20deg)}70%{transform:rotate(-15deg)}100%{transform:rotate(-24deg)}}
+@keyframes bm2{0%{transform:rotate(30deg)}35%{transform:rotate(-28deg)}70%{transform:rotate(18deg)}100%{transform:rotate(0)}}
+@keyframes bm3{0%{transform:rotate(38deg)}35%{transform:rotate(-20deg)}70%{transform:rotate(15deg)}100%{transform:rotate(24deg)}}
+.spi-floor{position:absolute;left:10%;right:10%;top:56%;height:12%;border-radius:50%;background:radial-gradient(ellipse,rgba(255,255,255,.35),transparent 70%);opacity:0;transition:opacity .5s}
+.spi-logo{position:absolute;inset:0;display:grid;place-items:center;font-weight:800;font-size:clamp(60px,19vw,96px);letter-spacing:-.05em;color:#222;transition:color .3s,text-shadow .5s}
+.spi-logo b{font-weight:800;color:#2a1410;transition:color .3s}
+.spi.lit .spi-logo{color:#fff;text-shadow:0 0 40px rgba(255,255,255,.45)}
+.spi.lit .spi-logo b{color:#ff4a2b}
+.spi.lit .spi-floor{opacity:1}
+.spi-tag{position:absolute;left:0;right:0;top:calc(50% + clamp(44px,13vw,64px));text-align:center;font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9b9b9b;opacity:0;transition:opacity .5s .2s}
+.spi.lit .spi-tag{opacity:1}
+.spi .fx-tap{opacity:0;transition:opacity .5s .5s}.spi.lit .fx-tap{opacity:1}
+/* Estrella Spotlight */
+.star-w{display:grid;place-items:center}
+.sw-rays{position:absolute;left:50%;top:48%;width:180vmax;height:180vmax;margin:-90vmax 0 0 -90vmax;background:repeating-conic-gradient(rgba(255,210,63,.16) 0 7deg,transparent 7deg 20deg);-webkit-mask:radial-gradient(circle,#000 0,transparent 45%);mask:radial-gradient(circle,#000 0,transparent 45%);opacity:0;animation:rayIn .8s ease forwards .7s,raySpin 24s linear infinite}
+@keyframes rayIn{to{opacity:1}}
+@keyframes raySpin{to{transform:rotate(360deg)}}
+.sw-beam{position:absolute;left:50%;top:-5%;width:90%;height:75%;transform:translateX(-50%) scaleY(0);transform-origin:top;background:linear-gradient(to bottom,rgba(255,255,255,.5),rgba(255,255,255,.05));clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);animation:swBeam .5s ease-out forwards .2s}
+@keyframes swBeam{to{transform:translateX(-50%) scaleY(1)}}
+.sw-glitter{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sw-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding-inline:20px;margin-top:12vh}
+.sw-star{width:46px;height:46px;fill:#ffd23f;filter:drop-shadow(0 0 12px rgba(255,210,63,.8));opacity:0;animation:swStar .6s cubic-bezier(.3,1.6,.5,1) forwards .55s}
+@keyframes swStar{from{opacity:0;transform:scale(0) rotate(-120deg)}to{opacity:1;transform:none}}
+.sw-eyebrow{font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#ffd23f;opacity:0;animation:winUp .5s ease forwards .7s}
+.sw-name{font-weight:800;font-size:clamp(46px,15vw,76px);line-height:.95;letter-spacing:-.05em;overflow-wrap:anywhere;text-shadow:0 0 30px rgba(255,210,63,.45);opacity:0;animation:winSlam .6s cubic-bezier(.2,1.35,.4,1) forwards .8s}
+.sw-name.long{font-size:clamp(34px,10vw,52px)}
+.sw-sub{font-weight:800;color:#9b9b9b;font-size:18px;opacity:0;animation:winUp .5s ease forwards 1.1s}
+.sw-sub b{color:#fff;font-size:28px}
+.star-w .fx-tap{color:#9b9b9b}
+@media (prefers-reduced-motion:reduce){.dri *,.woof *,.spi *,.star-w *{animation:none!important;transition:none!important}.sw-star,.sw-eyebrow,.sw-name,.sw-sub,.sw-rays{opacity:1}.sw-beam{transform:translateX(-50%)}.woof-word,.woof-sub{opacity:1}.spk{display:none}}
+@media (prefers-reduced-motion:reduce){.dr-card.beat,.boom,.boom .ring,.boom-word,.cd-num{animation:none!important}.boom-sub{opacity:1}.sp-verdict{opacity:1}}
 @media (prefers-reduced-motion:reduce){.pd-block{height:var(--h)}.pd-who,.pd-crown,.gl-verdict,.gl-sub,.gl-tap{opacity:1}.gl-list .strike{width:calc(100% + 8px)}.gl-stamp{opacity:1;transform:rotate(-14deg)}}
 @media (prefers-reduced-motion:reduce){.spots{display:none}}
 @media (prefers-reduced-motion:reduce){#fx *{animation:none!important}.lasers,.flash,.fc:not(.top){display:none}.strobe,.fx-tap,.fc.top,.fc.top .msg,.fc.top .sub{opacity:1!important}}
@@ -406,7 +537,8 @@ function setLang(l){
     const fi=from.defTeams.indexOf(t.name);if(fi>=0){t.name=to.defTeams[fi];return}
     const m=t.name.match(/^(Equipo|Team) (\d+)$/);if(m)t.name=to.teamN(m[2]);
   });
-  if(S.fi)S.fi.players=S.fi.players.map(p=>{const m=p.match(/^(Jugador|Player) (\d+)$/);return m?FL[l].playerN(m[2]):p});
+  const tr=p=>{const m=p.match(/^(Jugador|Player) (\d+)$/);return m?FL[l].playerN(m[2]):p};
+  if(S.fi)S.fi.players=S.fi.players.map(tr);if(S.dr&&S.dr.screen==="setup")S.dr.players=S.dr.players.map(tr);if(S.sp&&S.sp.screen==="setup")S.sp.players=S.sp.players.map(tr);
   S.lang=l;
 }
 
@@ -483,8 +615,8 @@ function nextTurn(){
   if(S.screen==="gameEnd")celebrateEncore();
 }
 function nextRound(){S.round++;S.remaining=shuffle(S.deck);S.screen="roundIntro";save();render()}
-function openMenu(m){if(S.app==="fakeid"){if(S.fi.running){fiStop();S.menuPaused=true}}else if(S.screen==="playing"&&!S.paused){stopTimer();S.paused=true;S.menuPaused=true}S.menu=m;save();render()}
-function closeMenu(){S.menu=null;if(S.menuPaused){S.menuPaused=false;if(S.app==="fakeid")fiRun();else if(S.screen==="playing")startTimer()}save();render()}
+function openMenu(m){if(S.app==="drop"){if(drPause())S.menuPaused=true}else if(S.app==="fakeid"){if(S.fi.running){fiStop();S.menuPaused=true}}else if(S.screen==="playing"&&!S.paused){stopTimer();S.paused=true;S.menuPaused=true}S.menu=m;save();render()}
+function closeMenu(){S.menu=null;if(S.menuPaused){S.menuPaused=false;if(S.app==="drop")drRun();else if(S.app==="fakeid")fiRun();else if(S.screen==="playing")startTimer()}save();render()}
 function togglePause(){if(S.paused){startTimer();render()}else{stopTimer();S.paused=true;render()}}
 
 /* ---------- Vistas ---------- */
@@ -598,7 +730,7 @@ function table(){
 /* ---------- Hub + Fake ID ---------- */
 const FL={
 es:{
-  hubTag:"Dos juegos para la noche. Un solo móvil.",games:"← The Night Game",inProgress:"Partida en curso",
+  hubTag:"Cuatro juegos para la noche. Un solo móvil.",games:"← The Night Game",inProgress:"Partida en curso",
   encoreMeta:"Equipos · 3 rondas",encoreDesc:"Describe, resume en una palabra y haz mímica con el mismo mazo. Gana el equipo que más adivine.",
   fiMeta:"Jugadores · Impostor",fiDesc:"Todos reciben la misma carta menos uno. Dad pistas, desconfiad y pillad al que no sabe de qué va la cosa.",
   switchGame:"Cambiar de juego",
@@ -623,7 +755,7 @@ es:{
   confirmEndP:"Se cierra ahora con los puntos actuales y se muestra la clasificación.",scoring:"Cada ronda gana un bando: los inocentes si pillan al impostor y no adivina la carta; el impostor si se libra de la votación o la adivina."
 },
 en:{
-  hubTag:"Two games for the night. One phone.",games:"← The Night Game",inProgress:"Game in progress",
+  hubTag:"Four games for the night. One phone.",games:"← The Night Game",inProgress:"Game in progress",
   encoreMeta:"Teams · 3 rounds",encoreDesc:"Describe it, sum it up in one word, then act it out, all with the same deck. The team that guesses the most wins.",
   fiMeta:"Players · Impostor",fiDesc:"Everyone gets the same card except one. Give clues, trust no one and catch the player who has no idea what's going on.",
   switchGame:"Switch game",
@@ -665,7 +797,7 @@ function fiNewRound(){
   fi.left=fi.debateSecs;fi.running=false;fi.round++;fi.screen="pass";
   fi.players.forEach(p=>{if(fi.scores[p]==null)fi.scores[p]=0});
 }
-function fiStartGame(){const fi=S.fi;fi.players=fi.players.map((p,i)=>p.trim()||F().playerN(i+1));fi.scores={};fi.tally={crew:0,imp:0};fi.used=[];fi.round=0;fi.impostors=Math.min(fi.impostors,maxImps());fiNewRound()}
+function fiStartGame(){const fi=S.fi;fi.players=fi.players.map((p,i)=>p.trim()||F().playerN(i+1));S.lastPlayers=fi.players.slice();fi.scores={};fi.tally={crew:0,imp:0};fi.used=[];fi.round=0;fi.impostors=Math.min(fi.impostors,maxImps());fiNewRound()}
 let fiTimer=null,fiEnds=0;
 function fiRun(){const fi=S.fi;fiEnds=performance.now()+fi.left*1000;fi.running=true;clearInterval(fiTimer);fiTimer=setInterval(fiTick,200);keepAwake();fiTick()}
 function fiStop(){clearInterval(fiTimer);fiTimer=null;if(S.fi)S.fi.running=false}
@@ -756,6 +888,8 @@ function hubView(){const t=T(),f=F(),encLive=S.screen!=="setup"&&S.screen!=="rev
     <div class="games">
       <button class="game" data-a="goEncore"><div class="eyebrow">${f.encoreMeta}</div><div class="gname">Encore</div><p>${f.encoreDesc}</p>${encLive?`<span class="live">${f.inProgress}</span>`:""}<span class="arrow" aria-hidden="true">→</span></button>
       <button class="game" data-a="goFake"><div class="eyebrow">${f.fiMeta}</div><div class="gname">Fake ID</div><p>${f.fiDesc}</p>${fiLive?`<span class="live">${f.inProgress}</span>`:""}<span class="arrow" aria-hidden="true">→</span></button>
+      <button class="game" data-a="goDrop"><div class="eyebrow">${G().drMeta}</div><div class="gname">Drop</div><p>${G().drDesc}</p>${S.dr.screen!=="setup"?`<span class="live">${f.inProgress}</span>`:""}<span class="arrow" aria-hidden="true">→</span></button>
+      <button class="game" data-a="goSpot"><div class="eyebrow">${G().spMeta}</div><div class="gname">Spotlight</div><p>${G().spDesc}</p>${S.sp.screen!=="setup"?`<span class="live">${f.inProgress}</span>`:""}<span class="arrow" aria-hidden="true">→</span></button>
     </div>
     ${helpBtn("encore","btn btn-ghost")}
   </div>`;
@@ -799,6 +933,27 @@ es:{
   <li><b>Una sola palabra:</b> una pista y un único intento para tu equipo.</li>
   <li><b>Mímica:</b> sin hablar. Solo gestos y sonidos.</li></ol>
   <p>Cada ronda dura hasta vaciar el mazo; luego se baraja el mismo mazo para la siguiente. Tras la ronda 3 gana el equipo con más puntos.</p>`,
+ drop:`<p class="lead">De 3 a 20 jugadores · la bomba pasa de mano en mano.</p>
+  <h3>Preparación</h3><ul>
+  <li>Añadid a los jugadores y elegid cuántas <b>vidas</b> tiene cada uno (de 1 a 5).</li>
+  <li><b>Mecha:</b> corta, normal o larga. Nadie sabe cuándo explota.</li>
+  <li>Elegid las categorías de las que saldrán los temas.</li></ul>
+  <h3>Una ronda</h3><ol>
+  <li>Sale un tema, por ejemplo «Club de Berlín» o «Película de terror». Quien tiene el móvil pulsa <b>¡Empieza!</b></li>
+  <li>Di algo que encaje y pulsa <b>Pasar</b>. El siguiente hace lo mismo. El ritmo se acelera como un build-up.</li>
+  <li>Si repites, te quedas en blanco o lo que dices no vale, el grupo no te deja pasar.</li>
+  <li>Cuando llega el <b>drop</b>, quien tenga el móvil pierde una vida. Después salen ejemplos que valían.</li></ol>
+  <h3>Quién gana</h3><p>El último jugador que conserve vidas. Al final, el podio muestra el orden en que cayó cada uno.</p>`,
+ spot:`<p class="lead">De 3 a 20 jugadores · «¿Quién es más probable que…?».</p>
+  <h3>Preparación</h3><ul>
+  <li>Añadid a los jugadores.</li>
+  <li><b>Mazos:</b> Clásico (vida diaria y manías) y Noche (fiesta, clubs y festivales). Podéis usar los dos.</li>
+  <li>Elegid cuántas rondas jugar (de 5 a 50).</li></ul>
+  <h3>Una ronda</h3><ol>
+  <li>Leed la frase en voz alta y pulsad <b>3, 2, 1… ¡Señalad!</b> Al terminar la cuenta, todos señalan a la vez.</li>
+  <li>Marcad en el móvil a quien más dedos ha recibido. Si hay empate, marcad a todos los empatados.</li>
+  <li>El foco lo busca entre todos los nombres y se lleva un punto.</li></ol>
+  <h3>Quién gana</h3><p>Quien acumule más focos al acabar las rondas: la estrella de la noche.</p>`,
  fakeid:`<p class="lead">De 3 a 20 jugadores · todos tienen la misma carta menos el impostor.</p>
   <h3>Preparación</h3><ul>
   <li>Añadid a todos los jugadores y elegid cuántos impostores (como máximo, algo menos de la mitad).</li>
@@ -839,6 +994,27 @@ en:{
   <li><b>One word only:</b> one clue, and your team gets one guess.</li>
   <li><b>Charades:</b> no talking. Only gestures and sounds.</li></ol>
   <p>Each round lasts until the deck is empty; then the same deck is reshuffled for the next one. After round 3, the team with the most points wins.</p>`,
+ drop:`<p class="lead">3 to 20 players · the bomb goes from hand to hand.</p>
+  <h3>Setup</h3><ul>
+  <li>Add the players and choose how many <b>lives</b> each one has (1 to 5).</li>
+  <li><b>Fuse:</b> short, normal or long. Nobody knows when it goes off.</li>
+  <li>Pick the categories the topics come from.</li></ul>
+  <h3>A round</h3><ol>
+  <li>A topic comes up, such as “Berlin club” or “Horror film”. Whoever has the phone taps <b>Start!</b></li>
+  <li>Say something that fits and tap <b>Pass</b>. The next player does the same. The beat speeds up like a build-up.</li>
+  <li>If you repeat, go blank or your answer doesn't count, the group won't let you pass.</li>
+  <li>When the <b>drop</b> hits, whoever is holding the phone loses a life. Then you see some valid answers.</li></ol>
+  <h3>Who wins</h3><p>The last player with lives left. The podium shows the order everyone went out in.</p>`,
+ spot:`<p class="lead">3 to 20 players · “Who's most likely to…?”</p>
+  <h3>Setup</h3><ul>
+  <li>Add the players.</li>
+  <li><b>Decks:</b> Classic (everyday life and quirks) and Night out (parties, clubs and festivals). You can use both.</li>
+  <li>Choose how many rounds to play (5 to 50).</li></ul>
+  <h3>A round</h3><ol>
+  <li>Read the line out loud and tap <b>3, 2, 1… Point!</b> When the countdown ends, everyone points at the same time.</li>
+  <li>Tick the player who got the most fingers. If it's a tie, tick everyone who tied.</li>
+  <li>The spotlight hunts through the names, finds them and they score a point.</li></ol>
+  <h3>Who wins</h3><p>Whoever has the most spotlights when the rounds are over: the star of the night.</p>`,
  fakeid:`<p class="lead">3 to 20 players · everyone has the same card except the impostor.</p>
   <h3>Setup</h3><ul>
   <li>Add every player and choose how many impostors (at most just under half the group).</li>
@@ -859,21 +1035,293 @@ en:{
 function helpBtn(g,cls){return `<button class="${cls||"link"}" data-a="help" data-g="${g}">${(HELP[S.lang]||HELP.es).title}</button>`}
 function helpHTML(){
   if(!S.help)return"";const h=HELP[S.lang]||HELP.es,g=S.help;
-  const tabs=`<div class="seg wide help-tabs" role="tablist">${[["encore","Encore"],["fakeid","Fake ID"]].map(([k,n])=>`<button data-a="help" data-g="${k}" class="${g===k?"on":""}" role="tab" aria-selected="${g===k}">${n}</button>`).join("")}</div>`;
+  const tabs=`<div class="seg wide help-tabs" role="tablist">${[["encore","Encore"],["fakeid","Fake ID"],["drop","Drop"],["spot","Spotlight"]].map(([k,n])=>`<button data-a="help" data-g="${k}" class="${g===k?"on":""}" role="tab" aria-selected="${g===k}">${n}</button>`).join("")}</div>`;
   return `<div class="veil help" data-a="helpVeil"><div class="sheet howto" role="dialog" aria-modal="true" aria-label="${h.title}">
     <div class="toprow"><h2>${h.title}</h2>${tabs}</div>
     ${h[g]}${h.general}
     <button class="btn btn-main center" data-a="helpClose">${h.close}</button></div></div>`;
 }
 
+/* ---------- Drop y Spotlight ---------- */
+const GX={
+es:{
+ drMeta:"Jugadores · Bomba",drDesc:"Sale una categoría y el móvil pasa de mano en mano mientras el ritmo se acelera. A quien le pille el drop, pierde una vida.",
+ spMeta:"Jugadores · Votación",spDesc:"«¿Quién es más probable que…?» Todos señalan a la vez y el foco busca al más votado.",
+ players:"Jugadores",addPlayer:"+ Añadir jugador",removePlayer:"Quitar jugador",player:"Jugador",
+ lives:"Vidas",fuse:"Mecha",fuseS:"Corta",fuseN:"Normal",fuseL:"Larga",fuseHelp:"Nadie sabe cuándo explota. Corta: 12–25 s · Normal: 20–40 s · Larga: 30–60 s.",
+ start:"Empezar",round:n=>`Ronda ${n}`,roundOf:(n,t)=>`Ronda ${n} de ${t}`,
+ sayOne:"Di algo de esta categoría",hasPhone:"Tiene el móvil",otherCat:"Otra categoría",go:"¡Empieza!",
+ drRule:"Di una respuesta y pasa. Si repites, dudas demasiado o no vale, el grupo no te deja pasar.",passTo:p=>`✓ Pasar a ${p}`,
+ drop:"¡DROP!",loseLife:p=>`${p} pierde una vida`,isOut:p=>`${p} queda fuera`,examples:"Valían, por ejemplo",nextCat:"Siguiente categoría",seeWinner:"Ver ganador",
+ lastStanding:"Último en pie",survivor:"Superviviente",outRound:n=>`Fuera · ronda ${n}`,livesLeft:n=>`Con ${n} ${n===1?"vida":"vidas"}`,
+ decks:"Mazos",classic:"Clásico",night:"Noche",decksHelp:"Clásico: vida diaria y manías. Noche: fiesta, clubs y festivales.",rounds:"Rondas",
+ likely:"¿Quién es más probable que…",spRule:"Leed la frase en voz alta. A la de tres, todos señalan a la vez.",pointNow:"3, 2, 1… ¡Señalad!",point:"¡Señalad!",
+ whoMost:"¿A quién han señalado más?",whoHelp:"Si hay empate, marca a todos los empatados.",reveal:"Encender el foco",
+ getsSpot:n=>n>1?"se llevan el foco":"se lleva el foco",nextQ:"Siguiente",seeResult:"Ver resultado",endEarly:"Terminar",
+ starNight:"Estrella de la noche",stars:"Estrellas de la noche",spots:n=>`${n} ${n===1?"foco":"focos"}`,tie:"¡Empate! · ",
+ standings:"Clasificación",livesTable:"Vidas",spotsTable:"Focos",tapCont:"Toca para continuar"
+},
+en:{
+ drMeta:"Players · Bomb",drDesc:"A category comes up and the phone goes round while the beat speeds up. Whoever's holding it when the drop hits loses a life.",
+ spMeta:"Players · Vote",spDesc:"“Who's most likely to…?” Everyone points at once and the spotlight finds the most-voted player.",
+ players:"Players",addPlayer:"+ Add player",removePlayer:"Remove player",player:"Player",
+ lives:"Lives",fuse:"Fuse",fuseS:"Short",fuseN:"Normal",fuseL:"Long",fuseHelp:"Nobody knows when it goes off. Short: 12–25 s · Normal: 20–40 s · Long: 30–60 s.",
+ start:"Start",round:n=>`Round ${n}`,roundOf:(n,t)=>`Round ${n} of ${t}`,
+ sayOne:"Name something in this category",hasPhone:"Holding the phone",otherCat:"Other category",go:"Start!",
+ drRule:"Say one answer and pass. If you repeat, stall too long or it doesn't count, the group won't let you pass.",passTo:p=>`✓ Pass to ${p}`,
+ drop:"DROP!",loseLife:p=>`${p} loses a life`,isOut:p=>`${p} is out`,examples:"Valid answers included",nextCat:"Next category",seeWinner:"See the winner",
+ lastStanding:"Last one standing",survivor:"Survivor",outRound:n=>`Out · round ${n}`,livesLeft:n=>`With ${n} ${n===1?"life":"lives"} left`,
+ decks:"Decks",classic:"Classic",night:"Night out",decksHelp:"Classic: everyday life and quirks. Night out: parties, clubs and festivals.",rounds:"Rounds",
+ likely:"Who's most likely to…",spRule:"Read it out loud. On three, everyone points at the same time.",pointNow:"3, 2, 1… Point!",point:"Point!",
+ whoMost:"Who got the most fingers?",whoHelp:"If it's a tie, tick everyone who tied.",reveal:"Turn on the spotlight",
+ getsSpot:n=>n>1?"take the spotlight":"takes the spotlight",nextQ:"Next",seeResult:"See result",endEarly:"Finish",
+ starNight:"Star of the night",stars:"Stars of the night",spots:n=>`${n} ${n===1?"spotlight":"spotlights"}`,tie:"It's a tie! · ",
+ standings:"Standings",livesTable:"Lives",spotsTable:"Spotlights",tapCont:"Tap to continue"
+}};
+const G=()=>GX[S.lang]||GX.es;
+const SPOT={"classic": ["se pierda con el GPS puesto|get lost with the GPS on", "llore viendo una peli de dibujos|cry at a cartoon movie", "se haga famoso por accidente|become famous by accident", "se olvide de un cumpleaños importante|forget an important birthday", "adopte cinco gatos|adopt five cats", "se apunte al gimnasio y no vuelva|join a gym and never go back", "gane la lotería y lo pierda todo en un año|win the lottery and lose it all in a year", "hable con sus plantas|talk to their houseplants", "conteste un mensaje tres días tarde|reply to a text three days late", "se ría en el momento más serio|laugh at the most serious moment", "tenga una cuenta secreta de memes|run a secret meme account", "se coma la comida de otro de la nevera|eat someone else's food from the fridge", "compre algo inútil en la teletienda|buy something useless from a TV ad", "se quede dormido en el cine|fall asleep at the cinema", "rompa el móvil nuevo el primer día|break their new phone on day one", "sobreviva a un apocalipsis zombi|survive a zombie apocalypse", "sea el primero en morir en una peli de terror|die first in a horror movie", "se presente a un concurso de la tele|go on a TV game show", "ponga quince alarmas para despertarse|set fifteen alarms to wake up", "llegue tarde a su propia boda|be late to their own wedding", "mienta sobre haber visto una serie|lie about having watched a show", "se haga un tatuaje del que se arrepienta|get a tattoo they regret", "se enamore en un viaje|fall in love on a trip", "cambie de bando a mitad de una discusión|switch sides halfway through an argument", "cante en la ducha a todo volumen|sing in the shower at full volume", "se lleve los cubiertos del hotel|take the hotel cutlery home", "pierda las llaves esta semana|lose their keys this week", "se haga vegano y lo deje en un mes|go vegan and quit within a month", "tenga más plantas que amigos|have more plants than friends", "escriba un libro|write a book", "se mude a otro país sin avisar|move abroad without telling anyone", "haga spoiler sin querer|spoil a show by accident", "llore en la boda de un desconocido|cry at a stranger's wedding", "se apunte a un reality|sign up for a reality show", "vuelva con acento después de una semana fuera|come back from a week abroad with an accent", "llame a su madre todos los días|call their mum every day", "sepa la vida de todo el barrio|know everyone's business in the neighbourhood", "se cuele en un evento sin invitación|sneak into an event uninvited", "pida lo mismo en todos los restaurantes|order the same thing at every restaurant", "tarde una hora en elegir peli|take an hour to pick a movie", "haga un PowerPoint para convencer a sus amigos|make a PowerPoint to convince their friends", "discuta con un desconocido en internet|argue with a stranger online", "se ría de su propio chiste antes de terminarlo|laugh at their own joke before finishing it", "lleve siempre snacks encima|always carry snacks", "se gaste el sueldo el primer día|spend their salary on day one", "se caiga en público y finja que no ha pasado nada|fall in public and pretend nothing happened", "sea millonario a los 40|be a millionaire by 40", "se haga influencer|become an influencer", "tenga una opinión sobre todo|have an opinion on everything", "mande un audio de cinco minutos|send a five-minute voice note", "se equivoque con el nombre de alguien que acaba de conocer|get someone's name wrong right after meeting them", "olvide para qué ha entrado en una habitación|forget why they walked into a room", "se haga amigo del camarero|become best friends with the waiter", "sobreviva solo en una isla desierta|survive alone on a desert island", "se compre un perro por impulso|buy a dog on impulse", "deje una serie a dos capítulos del final|quit a show two episodes from the end", "llegue pronto a todo|be early to everything", "diga que sí a un plan y lo cancele a última hora|say yes to a plan and cancel last minute", "tenga un diario secreto|keep a secret diary", "conozca a un famoso y no lo reconozca|meet a celebrity and not recognise them", "se ponga a bailar en el supermercado|dance in the supermarket", "sea abducido por extraterrestres|get abducted by aliens", "haga un TikTok viral|make a viral TikTok", "se quede encerrado fuera de casa|lock themselves out of the house", "coleccione cosas raras|collect weird things", "tenga «123456» de contraseña|use \"123456\" as their password", "se lo crea todo|believe anything they're told", "gane una discusión sin tener razón|win an argument while being wrong", "se haga un selfie en un funeral|take a selfie at a funeral", "se pierda en IKEA|get lost in IKEA", "hable en sueños|talk in their sleep", "se ofrezca voluntario sin saber para qué|volunteer without knowing what for", "pida perdón a un mueble|apologise to a piece of furniture", "ponga la misma canción en bucle todo el día|play the same song on loop all day", "haga la mejor paella del grupo|make the best paella in the group", "esconda chocolate por toda la casa|hide chocolate all over the house", "se presente a alcalde|run for mayor", "tenga un plan B para todo|have a plan B for everything", "se emocione con un anuncio|get emotional at an advert", "sea el último en contestar en el grupo|be the slowest to reply in the group chat", "haga la compra con hambre y vuelva sin lo que necesitaba|shop hungry and come back without what they needed", "se ofenda con una peli de dibujos|get offended by a cartoon", "se haga monje|become a monk", "pierda un vuelo|miss a flight", "convenza a todos de hacer un plan absurdo|talk everyone into a ridiculous plan", "tenga la casa más ordenada|have the tidiest home", "se ría en mitad de un examen|laugh in the middle of an exam", "tenga una teoría conspiranoica favorita|have a favourite conspiracy theory", "adivine el final de cualquier peli|guess the ending of every movie", "se olvide de su propio cumpleaños|forget their own birthday", "sea el primero en casarse|be the first to get married", "siga siendo amigo de su ex|stay friends with their ex", "se pase el domingo entero en pijama|spend all Sunday in pyjamas", "hable con los animales|talk to animals", "dé consejos que nadie ha pedido|give advice nobody asked for", "se sepa una peli entera de memoria|know a whole movie by heart", "vuelva de vacaciones más cansado que se fue|come back from holiday more tired than they left", "viaje solo a la otra punta del mundo|travel solo to the other side of the world", "se compre un coche sin saber conducir|buy a car without knowing how to drive", "sea el último en enterarse de todo|be the last to find out about everything"], "night": ["sea el último en irse de la fiesta|be the last to leave the party", "se quede dormido en el after|fall asleep at the afterparty", "pierda el móvil esta noche|lose their phone tonight", "se cuele en la zona VIP|sneak into the VIP area", "acabe siendo amigo del DJ|end up best friends with the DJ", "le pida una canción al DJ|ask the DJ for a song", "baile solo en medio de la pista|dance alone in the middle of the dancefloor", "acabe cantando en un karaoke|end up singing at karaoke", "diga «una y nos vamos» y se quede hasta el cierre|say \"one more and we go\" and stay till closing", "se quede sin batería a las dos|run out of battery by 2 a.m.", "desaparezca sin despedirse|vanish without saying goodbye", "haga de fotógrafo toda la noche|be the group photographer all night", "le escriba a su ex a las cuatro de la mañana|text their ex at 4 a.m.", "se pierda de camino al baño|get lost on the way to the toilet", "se una a otro grupo de amigos|join another group of friends", "pida un kebab al salir|grab a kebab on the way home", "se cambie de zapatos a mitad de noche|change shoes halfway through the night", "pase más tiempo en la cola que dentro|spend longer in the queue than inside", "no pase el portero|get turned away at the door", "hable de trabajo en la pista|talk about work on the dancefloor", "se enamore en la zona de fumadores|fall in love in the smoking area", "se suba a una tarima|climb onto a podium", "haga el baile más vergonzoso|do the most embarrassing dance move", "grabe toda la noche en stories|film the whole night for stories", "se olvide la chaqueta en el guardarropa|forget their jacket at the cloakroom", "pague una ronda sin que nadie lo pida|buy a round without being asked", "se ponga a filosofar a las cinco|get philosophical at 5 a.m.", "llore con la última canción|cry at the last song", "diga que se va a casa y aparezca en otro club|say they're going home and turn up at another club", "se haga el experto en techno|pretend to be a techno expert", "le haga Shazam a todas las canciones|Shazam every single song", "lleve gafas de sol dentro del club|wear sunglasses inside the club", "pierda a sus amigos en un festival|lose their friends at a festival", "acabe la noche en la playa|end the night on the beach", "sea el primero en llegar y el primero en irse|be the first to arrive and the first to leave", "monte el after en su casa|host the afterparty at their place", "vea amanecer de fiesta este año|see the sunrise on a night out this year", "lleve purpurina a todo|wear glitter to everything", "se haga amigo del portero|befriend the bouncer", "se cuele en el backstage|sneak backstage", "hable con el DJ en mitad del set|chat to the DJ mid-set", "acabe con la camiseta de otro|end up wearing someone else's shirt", "cuente la misma anécdota tres veces|tell the same story three times", "se quede sin dinero en la primera hora|run out of money in the first hour", "confunda a un desconocido con un amigo|mistake a stranger for a friend", "organice la despedida más épica|throw the most epic stag or hen party", "baile reguetón en un club de techno|dance to reggaeton in a techno club", "vaya solo a un festival|go to a festival alone", "tarde más en arreglarse|take the longest to get ready", "pida agua en la barra y se la cobren|order water at the bar and get charged for it", "vaya en chanclas a una discoteca|wear flip-flops to a club", "se haga un piercing en un festival|get a piercing at a festival", "conozca a un famoso de fiesta|meet a celebrity on a night out", "vuelva a casa con un solo zapato|come home with one shoe", "haga amigos en la cola del baño|make friends in the toilet queue", "se sepa el nombre de todos los camareros|know every bartender's name", "pida «la última» cinco veces|order \"the last one\" five times", "se líe con alguien del grupo|hook up with someone from the group", "cante más alto que los altavoces|sing louder than the speakers", "acabe encabezando una conga|end up leading a conga line", "se coma todo el hielo de la copa|crunch through all the ice in their drink", "haga un brindis emotivo|give an emotional toast", "se olvide de dónde ha aparcado|forget where they parked", "pierda el último metro|miss the last train", "se apunte a ir a Ibiza mañana mismo|be up for flying to Ibiza tomorrow", "se ponga a bailar con el de seguridad|dance with the security guard", "tenga un look distinto para cada día de festival|have a different outfit for every festival day", "se duerma en el taxi|fall asleep in the taxi", "acabe en una fiesta llena de desconocidos|end up at a party full of strangers", "se adueñe de la música en una fiesta en casa|take over the aux at a house party", "suba demasiadas stories de noche|post way too many stories at night", "se arrepienta de un mensaje a la mañana siguiente|regret a message the next morning", "diga «mañana no salgo»|say \"I'm not going out tomorrow\"", "haga dos horas de cola para Berghain|queue two hours for Berghain", "aguante un set de doce horas|last a twelve-hour set", "salga del after con gafas de sol|leave the afterparty in sunglasses", "se compre la camiseta del festival|buy the festival T-shirt", "lleve el abanico más grande a la pista|bring the biggest fan to the dancefloor", "se sepa todos los line-ups de memoria|know every line-up by heart", "acabe la noche charlando con el taxista|end the night chatting with the taxi driver", "se cuele en una boda|gatecrash a wedding", "se haga un tatuaje de fiesta|get a tattoo on a night out", "se ponga a bailar sin música|dance with no music on", "se tire vestido a la piscina|jump into the pool fully dressed", "pida un chupito que nadie más quiere|order a shot nobody else wants", "siga de fiesta el lunes|still be partying on Monday", "sea el alma de la fiesta|be the life of the party", "se quede charlando en la puerta y no entre|stay chatting at the door and never go in", "se apunte a cualquier plan a las cinco de la mañana|be up for any plan at 5 a.m.", "convenza al grupo de cambiar de sitio|convince the group to go somewhere else", "acabe haciendo de psicólogo en el baño|end up playing therapist in the bathroom", "vuelva a casa con un mejor amigo nuevo|come home with a new best friend", "desayune churros después de la fiesta|have churros after the party", "acabe en el after de un desconocido|end up at a stranger's afterparty", "se haga una foto con el DJ|get a photo with the DJ", "se le escape un secreto de fiesta|spill a secret on a night out", "se quede afónico de tanto gritar|lose their voice from shouting", "sea el único que se acuerda de todo al día siguiente|be the only one who remembers everything the next day", "duerma con la ropa puesta|sleep in their clothes", "diga que este es su último año de festivales|say this is their last festival year"]};
+const DEF_P=/^(Jugador|Player) \d+$/;
+function defPlayers(lang){return [1,2,3,4].map(n=>(FL[lang||"es"]).playerN(n))}
+function seedPlayers(list){if(list.every(p=>DEF_P.test(p))&&S.lastPlayers&&S.lastPlayers.length>=3)return S.lastPlayers.slice();return list}
+function cleanPlayers(list){return list.map((p,i)=>p.trim()||F().playerN(i+1))}
+function playersEditor(list,key){const g=G();
+  return `<div class="field"><label>${g.players} <span class="small">(${list.length})</span></label>
+   ${list.map((p,i)=>`<div class="team-row"><span class="pnum">${i+1}</span><input id="${key}-p${i}" data-plist="${key}" data-pi="${i}" value="${esc(p)}" maxlength="18" aria-label="${g.player} ${i+1}">${list.length>3?`<button class="icon-btn" data-a="plDel" data-k="${key}" data-i="${i}" aria-label="${g.removePlayer}">×</button>`:""}</div>`).join("")}
+   ${list.length<20?`<button class="btn btn-ghost" data-a="plAdd" data-k="${key}" style="min-height:46px">${g.addPlayer}</button>`:""}</div>`}
+function plList(k){return k==="dr"?S.dr.players:k==="sp"?S.sp.players:S.fi.players}
+function modesPicker(sel,act,count){const t=T();
+  return `<div class="field"><div class="toprow"><label>${t.themes} <span class="small">${t.pick}</span></label></div>
+   <div class="modes">${Object.keys(THEMES).map(k=>`<button class="mode ${sel.includes(k)?"on":""}" data-a="${act}" data-m="${k}" aria-pressed="${sel.includes(k)}"><span class="check" aria-hidden="true">${sel.includes(k)?"✓":""}</span><span class="mname">${themeName(k)}</span><span class="mtag">${themeTag(k)}</span>${count?`<span class="lvl">${count(k)}</span>`:""}</button>`).join("")}</div></div>`}
+function gHeader(name,sub){return `<div class="toprow"><div class="eyebrow">${name}${sub?" · "+sub:""}</div>${menuBtn()}</div>`}
+function setupTop(name,html,helpKey){return `<div class="toprow" style="padding-top:6px;align-items:flex-start"><div><div class="links"><button class="link" data-a="hub">${F().games}</button>${helpBtn(helpKey)}</div><div class="logo" style="margin-top:6px">${html}</div></div>${prefs()}</div>`}
+const hearts=(n,max)=>`<span class="hearts" aria-label="${n}">${"♥".repeat(Math.max(0,n))}<i>${"♥".repeat(Math.max(0,max-n))}</i></span>`;
+
+/* ---- Drop ---- */
+function drFresh(lang){return{screen:"setup",players:defPlayers(lang),lives:3,fuse:"n",modes:ALL_MODES.slice(),round:0,hp:[],out:[],holder:0,prompt:null,used:[],loser:null,running:false,left:0,len:0}}
+let drPrompts=null;
+function drAllPrompts(){if(drPrompts)return drPrompts;drPrompts=[];
+  for(const th in HINTS){const by={};for(const c in HINTS[th]){(by[HINTS[th][c]]=by[HINTS[th][c]]||[]).push(c)}
+    for(const l in by)if(by[l].length>=4)drPrompts.push({k:th,l,ex:by[l]})}
+  return drPrompts}
+function drLabel(p){return p.l.split("|")[S.lang==="en"?1:0]}
+function drExamples(p){const tr=c=>{const card=THEMES[p.k].pool.find(x=>x[0]===c);return card?cardWord(card):c};return shuffle(p.ex).slice(0,4).map(tr)}
+function drPick(){const dr=S.dr;let pool=drAllPrompts().filter(p=>dr.modes.includes(p.k)&&!dr.used.includes(p.k+p.l));
+  if(!pool.length){dr.used=[];pool=drAllPrompts().filter(p=>dr.modes.includes(p.k))}
+  const p=pool[Math.random()*pool.length|0];dr.used.push(p.k+p.l);dr.prompt={k:p.k,l:p.l,ex:p.ex};}
+const drAlive=()=>S.dr.hp.map((h,i)=>h>0?i:-1).filter(i=>i>=0);
+function drNextAlive(i){const n=S.dr.players.length;for(let k=1;k<=n;k++){const j=(i+k)%n;if(S.dr.hp[j]>0)return j}return i}
+function drStart(){const dr=S.dr;dr.players=cleanPlayers(dr.players);S.lastPlayers=dr.players.slice();dr.hp=dr.players.map(()=>dr.lives);dr.out=[];dr.round=0;dr.used=[];dr.holder=Math.random()*dr.players.length|0;drNextRound()}
+function drNextRound(){const dr=S.dr;dr.round++;drPick();dr.screen="ready";dr.running=false}
+const FUSE={s:[12,25],n:[20,40],l:[30,60]};
+let drT=null,drEnd=0,drT0=0;
+function drGo(){const dr=S.dr,[a,b]=FUSE[dr.fuse]||FUSE.n;dr.len=(a+Math.random()*(b-a))*1000;dr.left=dr.len;dr.screen="live";save();render();drRun()}
+function drRun(){const dr=S.dr;dr.running=true;drEnd=performance.now()+dr.left;keepAwake();clearTimeout(drT);drBeat()}
+function drBeat(){const dr=S.dr;if(!dr.running)return;const now=performance.now();dr.left=Math.max(0,drEnd-now);
+  if(dr.left<=0){drBoom();return}
+  const prog=1-dr.left/dr.len,iv=Math.max(140,620-480*prog);
+  beep(prog>.75?1180:880,.05,.1);
+  const el=app.querySelector(".dr-card");if(el){el.classList.remove("beat");void el.offsetWidth;el.classList.add("beat");el.style.setProperty("--bpm",iv+"ms")}
+  drT=setTimeout(drBeat,iv)}
+function drPause(){const dr=S.dr;if(!dr.running)return false;dr.left=Math.max(0,drEnd-performance.now());dr.running=false;clearTimeout(drT);return true}
+function drPass(){const dr=S.dr;if(!dr.running)return;dr.holder=drNextAlive(dr.holder);const h=app.querySelector(".dr-holder"),b=app.querySelector('[data-a="drPass"]');
+  if(h&&b){h.textContent=dr.players[dr.holder];b.textContent=G().passTo(dr.players[drNextAlive(dr.holder)]);h.classList.remove("swap");void h.offsetWidth;h.classList.add("swap")}else render()}
+function drBoom(){const dr=S.dr;dr.running=false;clearTimeout(drT);dr.loser=dr.holder;dr.hp[dr.loser]--;if(dr.hp[dr.loser]===0)dr.out.push({i:dr.loser,r:dr.round});
+  dr.screen="boom";save();render();showDropFx(dr.players[dr.loser])}
+function drAfter(){const dr=S.dr;if(drAlive().length<=1){dr.screen="final";save();render();celebrateDrop();return}
+  dr.holder=dr.hp[dr.loser]>0?dr.loser:drNextAlive(dr.loser);drNextRound();save();render()}
+function drEntries(){const dr=S.dr,g=G(),n=dr.players.length;
+  return dr.players.map((p,i)=>{const o=dr.out.findIndex(x=>x.i===i);
+    return o<0?{name:p,score:1000+dr.hp[i],sub:g.survivor}:{name:p,score:o,sub:g.outRound(dr.out[o].r)}})}
+function celebrateDrop(){const dr=S.dr,g=G(),w=drAlive()[0];if(w==null)return;
+  discoFx(g.lastStanding,esc(dr.players[w]),dr.players[w].length>16,null,null,esc(g.livesLeft(dr.hp[w])),G().tapCont)}
+function drLivesHTML(){const dr=S.dr;return `<div class="dr-lives">${dr.players.map((p,i)=>`<div class="${dr.hp[i]<=0?"out":""} ${i===dr.loser&&dr.screen==="boom"?"hit":""}"><span>${esc(p)}</span>${hearts(dr.hp[i],dr.lives)}</div>`).join("")}</div>`}
+const DV={
+setup(){const g=G(),dr=S.dr,t=T();
+  return `<div class="scroll">${setupTop("Drop","Drop<span>.</span>","drop")}
+   <p class="small">${g.drDesc}</p>
+   ${playersEditor(dr.players,"dr")}
+   <div class="row" style="flex-wrap:wrap">
+    <div class="field"><label>${g.lives}</label><div class="stepper"><button class="icon-btn" data-a="drLives" data-d="-1" aria-label="${t.fewer}">−</button><output>${dr.lives}</output><button class="icon-btn" data-a="drLives" data-d="1" aria-label="${t.more}">+</button></div></div>
+   </div>
+   <div class="field"><label>${g.fuse}</label><div class="seg wide" role="group" aria-label="${g.fuse}">${[["s",g.fuseS],["n",g.fuseN],["l",g.fuseL]].map(([v,l])=>`<button data-a="drFuse" data-v="${v}" class="${dr.fuse===v?"on":""}" aria-pressed="${dr.fuse===v}">${l}</button>`).join("")}</div><p class="small">${g.fuseHelp}</p></div>
+   ${modesPicker(dr.modes,"drMode")}
+  </div>
+  <button class="btn btn-main" data-a="drStart">${g.start}</button>`},
+ready(){const g=G(),dr=S.dr,p=dr.prompt;
+  return `${gHeader("Drop",g.round(dr.round))}
+  <div class="stage">
+   <div class="rule"><div class="eyebrow">${g.hasPhone}</div><h3>${esc(dr.players[dr.holder])}</h3><p class="small">${g.drRule}</p></div>
+   <div class="card dr-card"><div class="cat">${esc(themeName(p.k))}</div><div class="eyebrow" style="color:inherit;opacity:.85">${g.sayOne}</div><div class="word ${drLabel(p).length>18?"long":""}">${esc(drLabel(p))}</div></div>
+  </div>
+  <div class="row"><button class="btn btn-ghost" data-a="drOther">${g.otherCat}</button><button class="btn btn-main" data-a="drGo" style="flex:1.4">${g.go}</button></div>`},
+live(){const g=G(),dr=S.dr,p=dr.prompt;
+  return `${gHeader("Drop",g.round(dr.round))}
+  <div class="stage">
+   <div class="dr-hold"><div class="eyebrow">${g.hasPhone}</div><div class="dr-holder">${esc(dr.players[dr.holder])}</div></div>
+   <div class="card dr-card beat" style="--bpm:620ms"><div class="cat">${esc(themeName(p.k))}</div><div class="word ${drLabel(p).length>18?"long":""}">${esc(drLabel(p))}</div></div>
+  </div>
+  <button class="btn btn-good dr-pass" data-a="drPass">${g.passTo(esc(dr.players[drNextAlive(dr.holder)]))}</button>`},
+boom(){const g=G(),dr=S.dr,p=dr.prompt,ln=esc(dr.players[dr.loser]),last=drAlive().length<=1;
+  return `${gHeader("Drop",g.round(dr.round))}
+  <div><div class="eyebrow" style="color:var(--accent)">${g.drop}</div><div class="big">${dr.hp[dr.loser]>0?g.loseLife(ln):g.isOut(ln)}</div></div>
+  <div class="scroll">
+   <div class="dr-ex"><div class="eyebrow">${g.examples} · ${esc(drLabel(p))}</div><p>${drExamples(p).map(esc).join(" · ")}</p></div>
+   ${drLivesHTML()}
+  </div>
+  <button class="btn btn-main" data-a="drAfter">${last?g.seeWinner:g.nextCat}</button>`},
+final(){return `<div class="scroll pd-scroll">${podiumHTML(drEntries())}</div>${finalButtons("drAgain","drSettings")}`}
+};
+
+/* ---- Spotlight ---- */
+function spFresh(lang){return{screen:"setup",players:defPlayers(lang),decks:["classic","night"],rounds:15,round:0,prompt:null,used:[],sel:[],picked:[],tally:{}}}
+function spPick(){const sp=S.sp;let pool=[];sp.decks.forEach(d=>SPOT[d].forEach((q,i)=>{const id=d+i;if(!sp.used.includes(id))pool.push([id,q])}));
+  if(!pool.length){sp.used=[];sp.decks.forEach(d=>SPOT[d].forEach((q,i)=>pool.push([d+i,q])))}
+  const p=pool[Math.random()*pool.length|0];sp.used.push(p[0]);sp.prompt=p[1]}
+const spText=()=>S.sp.prompt.split("|")[S.lang==="en"?1:0];
+function spStart(){const sp=S.sp;sp.players=cleanPlayers(sp.players);S.lastPlayers=sp.players.slice();sp.tally={};sp.players.forEach(p=>sp.tally[p]=0);sp.round=0;spNext()}
+function spNext(){const sp=S.sp;sp.round++;sp.sel=[];sp.picked=[];spPick();sp.screen="prompt"}
+function spEntries(){const sp=S.sp,g=G();return sp.players.map(p=>({name:p,score:sp.tally[p]||0,sub:g.spots(sp.tally[p]||0)}))}
+function celebrateSpot(){const sp=S.sp,g=G(),max=Math.max(...sp.players.map(p=>sp.tally[p]||0)),w=sp.players.filter(p=>(sp.tally[p]||0)===max);
+  showStar(w,max,g.spots(max).replace(/^\d+\s/,""))}
+function showCountdown(done){const g=G();let n=3,fin=false;
+  const end=()=>{if(fin)return;fin=true;clearInterval(iv);closeFx();setTimeout(done,260)};
+  fx.innerHTML=`<div class="cd"><div class="cd-num" id="cdn">3</div></div>`;fx.hidden=false;fx.onclick=end;beep(660,.12,.18);
+  const iv=setInterval(()=>{n--;const el=fx.querySelector("#cdn");if(!el)return clearInterval(iv);
+    if(n>0){el.textContent=n;el.classList.remove("go");void el.offsetWidth;el.style.animation="none";void el.offsetWidth;el.style.animation="";beep(660,.12,.18)}
+    else if(n===0){el.textContent=g.point;el.classList.add("go");beep(1046,.4,.22)}
+    else end()},800)}
+function showSpotReveal(){const sp=S.sp,g=G(),names=sp.players,tgt=sp.picked;
+  fx.innerHTML=`<div class="foco-in sp-rev"><div class="sp-grid ${names.length>8?"many":""}">${names.map((p,i)=>`<div data-i="${i}">${esc(p)}</div>`).join("")}</div><div class="foco-dark"></div>
+   <div class="sp-verdict"><div class="sp-names">${tgt.map(i=>esc(names[i])).join(" & ")}</div><div class="eyebrow">${g.getsSpot(tgt.length)}</div></div><div class="fx-tap">${g.tapCont}</div></div>`;
+  fx.hidden=false;fx.onclick=closeFx;
+  const dk=fx.querySelector(".foco-dark"),cells=[...fx.querySelectorAll(".sp-grid div")],ctr=el=>{const r=el.getBoundingClientRect();return[r.left+r.width/2,r.top+r.height/2]};
+  const finish=()=>{tgt.forEach(i=>cells[i].classList.add("hit"));fx.querySelector(".sp-rev").classList.add("done");beep(523,.15,.15);setTimeout(()=>beep(784,.3,.18),140)};
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){dk.style.display="none";finish();return}
+  const order=shuffle(cells.map((_,i)=>i).filter(i=>!tgt.includes(i))).slice(0,4).concat([tgt[0]]),path=order.map(i=>ctr(cells[i]));
+  if(path.length<2)path.unshift([innerWidth/2,innerHeight*.2]);
+  const t0=performance.now(),D=2200;
+  (function f(){if(!dk.isConnected)return;const k=Math.min(1,(performance.now()-t0)/D),seg=k*(path.length-1),i=Math.min(path.length-2,Math.floor(seg)),u=seg-i,e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+    const x=path[i][0]+(path[i+1][0]-path[i][0])*e,y=path[i][1]+(path[i+1][1]-path[i][1])*e;
+    dk.style.background=`radial-gradient(circle 80px at ${x}px ${y}px,transparent 0 76%,rgba(0,0,0,.94) 100%)`;
+    if(k<1)requestAnimationFrame(f);else{dk.style.transition="opacity .5s";dk.style.opacity=".55";finish()}})()}
+function spMini(){const sp=S.sp,g=G(),rows=sp.players.map(p=>[p,sp.tally[p]||0]).sort((a,b)=>b[1]-a[1]);
+  return `<div class="pd-rest sp-mini"><div class="eyebrow">${g.standings}</div>${rows.map(r=>`<div><span>${esc(r[0])}</span><b>${r[1]}</b></div>`).join("")}</div>`}
+const SPV={
+setup(){const g=G(),sp=S.sp,t=T();
+  return `<div class="scroll">${setupTop("Spotlight","Spot<span>light</span>","spot")}
+   <p class="small">${g.spDesc}</p>
+   ${playersEditor(sp.players,"sp")}
+   <div class="field"><label>${g.decks}</label><div class="seg wide" role="group" aria-label="${g.decks}">${[["classic",g.classic],["night",g.night]].map(([v,l])=>`<button data-a="spDeck" data-v="${v}" class="${sp.decks.includes(v)?"on":""}" aria-pressed="${sp.decks.includes(v)}">${l}</button>`).join("")}</div><p class="small">${g.decksHelp}</p></div>
+   <div class="field"><label>${g.rounds}</label><div class="stepper"><button class="icon-btn" data-a="spRounds" data-d="-5" aria-label="${t.fewer}">−</button><output>${sp.rounds}</output><button class="icon-btn" data-a="spRounds" data-d="5" aria-label="${t.more}">+</button></div></div>
+  </div>
+  <button class="btn btn-main" data-a="spStart">${g.start}</button>`},
+prompt(){const g=G(),sp=S.sp;
+  return `${gHeader("Spotlight",g.roundOf(sp.round,sp.rounds))}
+  <div class="stage" style="align-items:stretch">
+   <div class="sp-q"><div class="eyebrow">${g.likely}</div><div class="sp-text">${esc(spText())}?</div></div>
+   <p class="small">${g.spRule}</p>
+  </div>
+  <button class="btn btn-main" data-a="spPoint">${g.pointNow}</button>`},
+pick(){const g=G(),sp=S.sp;
+  return `${gHeader("Spotlight",g.roundOf(sp.round,sp.rounds))}
+  <div><div class="small" style="margin-bottom:6px">${g.likely} ${esc(spText())}?</div><div class="big" style="font-size:clamp(28px,8vw,40px)">${g.whoMost}</div><p class="small" style="margin-top:6px">${g.whoHelp}</p></div>
+  <div class="scroll"><div class="vote-list">${sp.players.map((p,i)=>`<button class="vote ${sp.sel.includes(i)?"on":""}" data-a="spSel" data-i="${i}" aria-pressed="${sp.sel.includes(i)}"><span class="pnum">${i+1}</span><span class="t">${esc(p)}</span><span class="check" aria-hidden="true">${sp.sel.includes(i)?"✓":""}</span></button>`).join("")}</div></div>
+  <button class="btn btn-main" data-a="spReveal" ${sp.sel.length?"":"disabled"}>${g.reveal}</button>`},
+result(){const g=G(),sp=S.sp,last=sp.round>=sp.rounds;
+  return `${gHeader("Spotlight",g.roundOf(sp.round,sp.rounds))}
+  <div><div class="big">${sp.picked.map(i=>esc(sp.players[i])).join(" & ")}</div><div class="eyebrow" style="color:var(--accent);margin-top:6px">${g.getsSpot(sp.picked.length)}</div></div>
+  <div class="scroll">${spMini()}</div>
+  ${last?`<button class="btn btn-main" data-a="spEnd">${g.seeResult}</button>`:`<div class="row"><button class="btn btn-ghost" data-a="spEnd">${g.endEarly}</button><button class="btn btn-main" data-a="spNext" style="flex:1.4">${g.nextQ}</button></div>`}`},
+final(){return `<div class="scroll pd-scroll">${podiumHTML(spEntries())}</div>${finalButtons("spAgain","spSettings")}`}
+};
+
+/* ---- Menú común (Drop y Spotlight) ---- */
+function gMenuHTML(){const t=T(),f=F(),g=G(),isDr=S.app==="drop",name=isDr?"Drop":"Spotlight",st=isDr?S.dr:S.sp;let inner="";
+  if(S.menu==="main")inner=`<div class="toprow"><div class="eyebrow">${name} · ${g.round(st.round||1)}</div>${prefs()}</div><h2>${t.pausedGame}</h2>
+    <button class="btn btn-main" data-a="resume">${t.backGame}</button>
+    <button class="btn btn-ghost" data-a="mScores">${t.scores}</button>
+    ${helpBtn(isDr?"drop":"spot","btn btn-ghost")}
+    <button class="btn btn-ghost" data-a="mSwitch">${f.switchGame}</button>
+    <button class="btn btn-ghost" data-a="mTheme">${f.changeSettings}</button>
+    ${isDr?"":`<button class="btn btn-ghost" data-a="mEnd" style="color:var(--bad)">${t.endGame}</button>`}`;
+  else if(S.menu==="scores")inner=`<div class="eyebrow">${t.liveScores}</div><h2>${name}</h2>${isDr?drLivesHTML():spMini()}<button class="btn btn-ghost center" data-a="menu">${t.backMenu}</button>`;
+  else if(S.menu==="confirmEnd")inner=`<h2>${t.confirmEndH}</h2><p>${t.confirmEndP}</p><div class="row"><button class="btn btn-ghost center" data-a="menu">${t.cancel}</button><button class="btn btn-danger center" data-a="gDoEnd">${t.finish}</button></div>`;
+  else if(S.menu==="confirmTheme")inner=`<h2>${f.confirmSetH}</h2><p>${f.confirmSetP}</p><div class="row"><button class="btn btn-ghost center" data-a="menu">${t.cancel}</button><button class="btn btn-danger center" data-a="gDoSet">${t.cancelGame}</button></div>`;
+  return `<div class="veil" data-a="veil"><div class="sheet" role="dialog" aria-modal="true">${inner}</div></div>`}
+
+function curScreen(){return S.app==="fakeid"?S.fi.screen:S.app==="drop"?S.dr.screen:S.app==="spot"?S.sp.screen:S.screen}
+/* ---------- Animaciones Drop y Spotlight ---------- */
+const AX={es:{drTag:"Que no te pille con el móvil",spTag:"¿Quién es más probable que…?",star:"Estrella de la noche",stars:"Estrellas de la noche"},
+          en:{drTag:"Don't get caught holding it",spTag:"Who's most likely to…?",star:"Star of the night",stars:"Stars of the night"}};
+const A=()=>AX[S.lang]||AX.es;
+const RM=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
+let animT=[];function clearAnim(){animT.forEach(clearTimeout);animT=[]}
+const later=(f,ms)=>animT.push(setTimeout(f,ms));
+function bars(n,cls){let h="";for(let i=0;i<n;i++)h+=`<i style="--i:${i};--h:${(25+Math.random()*75).toFixed(0)}%;--d:${(Math.random()*.3).toFixed(2)}s"></i>`;return `<div class="${cls}">${h}</div>`}
+
+/* Entrada de Drop: build-up, silencio y drop */
+function showDropIntro(){clearAnim();
+  fx.innerHTML=`<div class="dri">${bars(28,"dri-eq")}<div class="dri-meter"><i></i></div><div class="dri-label">BUILD-UP</div>
+    <div class="dri-logo"><div>Drop<span>.</span></div></div><div class="dri-tag">${A().drTag}</div><div class="fx-tap">${P().tapStart}</div></div>`;
+  fx.hidden=false;const root=fx.querySelector(".dri");
+  const finish=()=>{clearAnim();root.classList.add("dropped","calm")};
+  fx.onclick=()=>{audio();if(!root.classList.contains("dropped")){finish();return}clearAnim();closeFx()};
+  if(RM()){finish();return}
+  root.classList.add("rise");
+  for(let k=0;k<12;k++)later(()=>beep(300+k*70,.06,.08),k*(140-k*6));
+  later(()=>root.classList.add("silence"),1550);
+  later(()=>{root.classList.add("dropped");fx.classList.add("shake");beep(60,.7,.4);try{navigator.vibrate&&navigator.vibrate(160)}catch(e){}},1850);
+  later(()=>{fx.classList.remove("shake");root.classList.add("calm")},2400);
+}
+
+/* Explosión de Drop: altavoz que revienta */
+function showDropFx(name){clearAnim();const g=G();
+  fx.innerHTML=`<div class="woof"><div class="woof-flash"></div><div class="spk"><i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i></div>${bars(32,"woof-wave")}
+    <div class="woof-word" data-t="${g.drop}"><span>${g.drop}</span></div><div class="woof-sub">${esc(name)}</div></div>`;
+  fx.hidden=false;fx.onclick=()=>{clearAnim();closeFx()};const root=fx.querySelector(".woof");
+  if(RM()){root.classList.add("blown");fxTimer=setTimeout(closeFx,1800);return}
+  [0,180,360].forEach((t,k)=>later(()=>{root.classList.remove("thump");void root.offsetWidth;root.classList.add("thump");beep(65+k*5,.14,.35)},t));
+  later(()=>{root.classList.add("blown");fx.classList.add("shake");beep(48,.9,.45);setTimeout(()=>beep(90,.5,.25),60);try{navigator.vibrate&&navigator.vibrate([220,60,320])}catch(e){}},560);
+  later(()=>fx.classList.remove("shake"),1100);
+  fxTimer=setTimeout(closeFx,2400);
+}
+
+/* Entrada de Spotlight: tres focos que barren el escenario */
+function showSpotIntro(){clearAnim();
+  fx.innerHTML=`<div class="spi"><div class="beam b1"></div><div class="beam b2"></div><div class="beam b3"></div><div class="spi-floor"></div>
+    <div class="spi-logo"><div>Spot<b>light</b></div></div><div class="spi-tag">${A().spTag}</div><div class="fx-tap">${P().tapStart}</div></div>`;
+  fx.hidden=false;fx.onclick=()=>{audio();clearAnim();closeFx()};
+  const root=fx.querySelector(".spi");if(RM()){root.classList.add("lit");return}
+  later(()=>{root.classList.add("lit");beep(523,.12,.12);setTimeout(()=>beep(784,.25,.14),120)},2100);
+}
+
+/* Ganador de Spotlight: estrella en el escenario */
+function showStar(names,score,unit){clearAnim();const a=A();
+  fx.innerHTML=`<div class="star-w"><div class="sw-rays"></div><div class="sw-beam"></div><canvas class="sw-glitter" aria-hidden="true"></canvas>
+    <div class="sw-wrap" role="status"><svg class="sw-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3 1.7 9.3l7.2-.9z"/></svg>
+    <div class="sw-eyebrow">${names.length>1?a.stars:a.star}</div><div class="sw-name ${names.join(" & ").length>16?"long":""}">${names.map(esc).join("<br>")}</div>
+    <div class="sw-sub"><b class="win-num">0</b> ${unit}</div></div><div class="fx-tap">${G().tapCont}</div></div>`;
+  fx.hidden=false;fx.onclick=()=>{clearAnim();closeFx()};
+  const num=fx.querySelector(".win-num"),t0=performance.now()+900;
+  (function c(){if(!num.isConnected)return;const k=Math.min(1,Math.max(0,(performance.now()-t0)/1000));num.textContent=Math.round(score*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(c)})();
+  later(fanfare,400);
+  if(RM()){num.textContent=score;return}
+  const cv=fx.querySelector(".sw-glitter"),ctx=cv.getContext("2d"),dpr=Math.min(2,devicePixelRatio||1),W=cv.clientWidth,H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.scale(dpr,dpr);
+  const P2=[];const add=n=>{for(let i=0;i<n;i++)P2.push({x:W/2+(Math.random()-.5)*W*.5,y:-10-Math.random()*H*.4,vy:1+Math.random()*2.2,vx:(Math.random()-.5)*.6,r:1+Math.random()*2.4,tw:Math.random()*6.28,c:Math.random()<.75?"#ffd23f":"#ffffff"})};
+  later(()=>add(140),700);const tEnd=performance.now()+6000;
+  (function loop(){if(!cv.isConnected)return;ctx.clearRect(0,0,W,H);
+    for(const p of P2){p.y+=p.vy;p.x+=p.vx+Math.sin(p.tw)*.3;p.tw+=.12;ctx.globalAlpha=.5+.5*Math.abs(Math.sin(p.tw));ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.283);ctx.fill();if(p.y>H+10&&performance.now()<tEnd){p.y=-10;p.x=W/2+(Math.random()-.5)*W*.6}}
+    ctx.globalAlpha=1;requestAnimationFrame(loop)})();
+}
+
 let lastView="";
 function render(){
   const root=document.documentElement;root.lang=S.lang;root.classList.toggle("th-light",S.theme==="light");
-  const view=(S.help||"")+"|"+S.app+"|"+(S.app==="fakeid"?S.fi.screen:S.screen)+"|"+(S.menu||"");
+  const view=(S.help||"")+"|"+S.app+"|"+curScreen()+"|"+(S.menu||"");
   const sc=app.querySelector(".scroll"),sh=app.querySelector(".sheet");
   const keep=view===lastView,top=keep&&sc?sc.scrollTop:0,stop=keep&&sh?sh.scrollTop:0;
   const ae=document.activeElement,focusId=keep&&ae&&ae.id?ae.id:null;
-  app.innerHTML=(S.app==="hub"?hubView():S.app==="fakeid"?FV[S.fi.screen]()+(S.menu?fiMenuHTML():""):V[S.screen]()+menuHTML())+helpHTML();
+  app.innerHTML=(S.app==="hub"?hubView():S.app==="fakeid"?FV[S.fi.screen]()+(S.menu?fiMenuHTML():""):S.app==="drop"?DV[S.dr.screen]()+(S.menu?gMenuHTML():""):S.app==="spot"?SPV[S.sp.screen]()+(S.menu?gMenuHTML():""):V[S.screen]()+menuHTML())+helpHTML();
   const sc2=app.querySelector(".scroll");if(sc2)sc2.scrollTop=top;
   const sh2=app.querySelector(".sheet");if(sh2)sh2.scrollTop=stop;
   if(focusId){const f=document.getElementById(focusId);if(f)f.focus({preventScroll:true})}
@@ -904,9 +1352,9 @@ function podiumHTML(entries){
   const delay=e=>e===top[0]?.75:e===top[1]?.35:0;
   return `<div class="pd-head"><div class="eyebrow">${p.finalRes}</div><div class="big">${winners.length>1?p.tie:p.wins(esc(winners[0].name))}</div></div>
   <div class="podium" aria-label="${p.finalRes}">${order.map(e=>`<div class="pd-step ${e.rank===1?"first":""}">
-    ${e.rank===1?crown:""}<div class="pd-who" style="--d:${delay(e)+.45}s">${esc(e.name)}<small>${e.score} ${p.pts}</small></div>
+    ${e.rank===1?crown:""}<div class="pd-who" style="--d:${delay(e)+.45}s">${esc(e.name)}<small>${e.sub!=null?esc(e.sub):e.score+" "+p.pts}</small></div>
     <div class="pd-block" style="--h:${H[Math.min(3,e.rank)]}px;--d:${delay(e)}s;${e.color&&e.rank===1?`--team:${e.color}`:""}">${e.rank}</div></div>`).join("")}</div>
-  ${sorted.length>3?`<div class="pd-rest">${sorted.slice(3).map(e=>`<div><span>${e.rank}. ${esc(e.name)}</span><b>${e.score}</b></div>`).join("")}</div>`:""}`;
+  ${sorted.length>3?`<div class="pd-rest">${sorted.slice(3).map(e=>`<div><span>${e.rank}. ${esc(e.name)}</span><b>${e.sub!=null?esc(e.sub):e.score}</b></div>`).join("")}</div>`:""}`;
 }
 function finalButtons(again,menu){const p=P();return `<div class="row"><button class="btn btn-ghost" data-a="${menu}">${p.gameMenu}</button><button class="btn btn-main" data-a="${again}">${p.again}</button></div>`}
 function encoreAgain(){S.numCards=clampCards(S.numCards);buildDeck();startGame();save();render();showShuffle()}
@@ -1013,6 +1461,7 @@ app.addEventListener("input",e=>{
   if(e.target.dataset.team!==undefined){S.teams[+e.target.dataset.team].name=e.target.value;save()}
   if(e.target.id==="custom"){S.custom=e.target.value;save()}
   if(e.target.dataset.player!==undefined){S.fi.players[+e.target.dataset.player]=e.target.value;save()}
+  if(e.target.dataset.plist){plList(e.target.dataset.plist)[+e.target.dataset.pi]=e.target.value;save()}
   if(e.target.id==="numCards"){S.numCards=clampCards(+e.target.value);const o=document.getElementById("numOut");if(o)o.textContent=S.numCards;save()}
 });
 app.addEventListener("click",e=>{
@@ -1029,7 +1478,33 @@ app.addEventListener("click",e=>{
     case"mode":{const m=b.dataset.m,on=S.modes.includes(m);if(on&&S.modes.length===1)break;S.modes=on?S.modes.filter(x=>x!==m):[...S.modes,m];S.numCards=clampCards(S.numCards);}break;
     case"hub":S.app="hub";break;
     case"goEncore":S.app="encore";break;
-    case"goFake":S.app="fakeid";save();render();showFoco();return;
+    case"goFake":S.app="fakeid";if(S.fi.screen==="setup")S.fi.players=seedPlayers(S.fi.players);save();render();showFoco();return;
+    case"goDrop":S.app="drop";if(S.dr.screen==="setup")S.dr.players=seedPlayers(S.dr.players);save();render();showDropIntro();return;
+    case"goSpot":S.app="spot";if(S.sp.screen==="setup")S.sp.players=seedPlayers(S.sp.players);save();render();showSpotIntro();return;
+    case"plAdd":{const l=plList(b.dataset.k);l.push(F().playerN(l.length+1));}break;
+    case"plDel":plList(b.dataset.k).splice(i,1);if(b.dataset.k==="fi")S.fi.impostors=Math.min(S.fi.impostors,maxImps());break;
+    case"drLives":S.dr.lives=Math.max(1,Math.min(5,S.dr.lives+ +b.dataset.d));break;
+    case"drFuse":S.dr.fuse=b.dataset.v;break;
+    case"drMode":{const m=b.dataset.m,dr=S.dr,on=dr.modes.includes(m);if(on&&dr.modes.length===1)break;dr.modes=on?dr.modes.filter(x=>x!==m):[...dr.modes,m];}break;
+    case"drStart":drStart();save();render();showShuffle(S.dr.players.length+" "+F().players.toLowerCase());return;
+    case"drOther":drPick();break;
+    case"drGo":audio();drGo();return;
+    case"drPass":drPass();return;
+    case"drAfter":drAfter();return;
+    case"drAgain":drStart();save();render();showShuffle(S.dr.players.length+" "+F().players.toLowerCase());return;
+    case"drSettings":S.dr.screen="setup";break;
+    case"spDeck":{const v=b.dataset.v,sp=S.sp,on=sp.decks.includes(v);if(on&&sp.decks.length===1)break;sp.decks=on?sp.decks.filter(x=>x!==v):[...sp.decks,v];}break;
+    case"spRounds":S.sp.rounds=Math.max(5,Math.min(50,S.sp.rounds+ +b.dataset.d));break;
+    case"spStart":spStart();save();render();showShuffle(S.sp.players.length+" "+F().players.toLowerCase());return;
+    case"spPoint":audio();showCountdown(()=>{S.sp.screen="pick";save();render()});return;
+    case"spSel":{const sp=S.sp;sp.sel=sp.sel.includes(i)?sp.sel.filter(x=>x!==i):[...sp.sel,i];}break;
+    case"spReveal":{const sp=S.sp;if(!sp.sel.length)return;sp.picked=sp.sel.slice().sort((a,b)=>a-b);sp.picked.forEach(k=>sp.tally[sp.players[k]]=(sp.tally[sp.players[k]]||0)+1);sp.screen="result";save();render();showSpotReveal();return}
+    case"spNext":spNext();break;
+    case"spEnd":S.sp.screen="final";save();render();celebrateSpot();return;
+    case"spAgain":spStart();save();render();showShuffle(S.sp.players.length+" "+F().players.toLowerCase());return;
+    case"spSettings":S.sp.screen="setup";break;
+    case"gDoEnd":S.menu=null;S.menuPaused=false;if(S.app==="spot"){S.sp.screen="final";save();render();celebrateSpot();return}break;
+    case"gDoSet":S.menu=null;S.menuPaused=false;if(S.app==="drop"){drPause();S.dr.screen="setup"}else if(S.app==="spot")S.sp.screen="setup";break;
     case"mSwitch":S.menu=null;S.menuPaused=false;S.app="hub";break;
     case"fiAddP":S.fi.players.push(F().playerN(S.fi.players.length+1));break;
     case"fiDelP":S.fi.players.splice(i,1);S.fi.impostors=Math.min(S.fi.impostors,maxImps());break;
@@ -1080,7 +1555,8 @@ app.addEventListener("click",e=>{
   save();render();
 });
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)return;
-  if(S.app==="fakeid"&&S.fi.running){fiStop();save();render()}
+  if(S.app==="drop"&&S.dr.running){drPause();save();render()}
+  else if(S.app==="fakeid"&&S.fi.running){fiStop();save();render()}
   else if(S.app==="encore"&&S.screen==="playing"&&!S.paused){stopTimer();S.paused=true;save();render()}});
 function holdShow(h){h.classList.add("show")}
 function holdHide(){const h=app.querySelector("[data-hold].show");if(!h)return;h.classList.remove("show");
@@ -1103,6 +1579,9 @@ function start(data){
   if(!okModes||!okDeck){const keep={teams:S.teams,lang:S.lang,theme:S.theme,custom:S.custom||"",fi:S.fi};S=Object.assign(fresh(),keep);}
   if(S.screen==="playing"){S.paused=true}
   if(!S.fi)S.fi=fiFresh(S.lang);
+  if(!S.dr||!S.dr.players)S.dr=drFresh(S.lang);if(!S.sp||!S.sp.players)S.sp=spFresh(S.lang);
+  S.dr.running=false;if(S.dr.screen==="live"){S.dr.screen="ready"}
+  if(S.dr.prompt&&!(HINTS[S.dr.prompt.k]))S.dr=drFresh(S.lang);
   if(!S.fi.modes.every(m=>THEMES[m]))S.fi.modes=ALL_MODES.slice();
   if(S.fi.hint===true)S.fi.hint="detail";if(S.fi.hint===false)S.fi.hint="none";if(!["none","cat","detail"].includes(S.fi.hint))S.fi.hint="detail";
   if(!S.fi.tally)S.fi.tally={crew:0,imp:0};if(S.fi.screen==="final")S.fi.screen="setup";
@@ -1112,7 +1591,7 @@ function start(data){
   render();
   if(fresh0)showIntro();
 }
-window.claude?.hot?.snapshot?.(()=>{const c={...S,fi:{...S.fi,running:false}};if(c.screen==="playing")c.paused=true;return c});
+window.claude?.hot?.snapshot?.(()=>{const c={...S,fi:{...S.fi,running:false},dr:{...S.dr,running:false}};if(c.screen==="playing")c.paused=true;return c});
 window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
 </script>
 
